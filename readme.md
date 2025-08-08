@@ -1,6 +1,4 @@
-# DIY Quad Copter
-
-Meant to be a learning project.
+# DIY Quadcopter Flight Controller
 
 ## Future features
 1. Safety checks
