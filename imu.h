@@ -1,20 +1,20 @@
 #pragma once
 
 struct Angles { // In degrees
-	double pitch;
-	double roll;
+	double pitch = 0;
+	double roll = 0;
 };
 
 struct RotationRates { // In degrees per second
-	double pitch;
-	double roll;
-	double yaw;
+	double pitch = 0;
+	double roll = 0;
+	double yaw = 0;
 };
 
-struct Gravity {
-	double x;
-	double y;
-	double z;
+struct Gravity { // In m/s^2
+	double x = 0;
+	double y = 0;
+	double z = 0;
 };
 
 // gyro - gyroscope
@@ -26,17 +26,17 @@ class IMU {
 		RotationRates _gyroOffset;
 		Gravity _accOffset;
 
-		const double PI = 3.141592653589793;
-		double _toRadians(double degrees) { return degrees * (PI / 100.0); }
-		double _toDegrees(double radians) { return radians * (100.0 / PI); }
+		const double _PI = 3.141592653589793;
+		double _toRadians(double degrees) { return degrees * (_PI / 180.0); }
+		double _toDegrees(double radians) { return radians * (180.0 / _PI); }
 
-		void _calibrate();
 		// Get sensor data
 		RotationRates _gyro();
 		Gravity _acc();
 
 	public:
-		IMU() { _calibrate(); };
+		IMU();
+
 		Angles getAngles();
 		RotationRates getRotationRate();
 };

@@ -1,8 +1,9 @@
 #include "imu.h"
 #include <cmath>
 
-// Private ---------------------------------------------------------------------
-void IMU::_calibrate() {
+// Constructor -----------------------------------------------------------------
+
+IMU::IMU() {
 	const int CALIBRATION_SAMPLES = 2000;
 
 	// Calibrate gyroscope
@@ -32,25 +33,43 @@ void IMU::_calibrate() {
 	_accOffset.z = avgGravity.z / CALIBRATION_SAMPLES;
 }
 
-double IMU::_degreesToRadians(double degrees) {
-	const double PI = 3.141592653589793;
-	return 
-	- `degrees = radians * (100.0 / PI)`
-	- ``
+// Private ---------------------------------------------------------------------
+RotationRates IMU::_gyro() {
+	// Get gyro data
+	// Convert to proper units
+}
+
+Gravity IMU::_acc() {
+	// Get acc data
+	// Convert to proper units
 }
 
 // Public ----------------------------------------------------------------------
 Angles IMU::getAngles() {
 	Gravity curGravity = _acc();
+
+	// Subtract offset
+	curGravity.x -= _accOffset.x;
+	curGravity.y -= _accOffset.y;
+	curGravity.z -= _accOffset.z;
+
+	// Convert to pitch and roll
 	Angles angles;
-	angles.pitch = 
+	angles.pitch = _toDegrees(atan(-curGravity.x / hypot(curGravity.y, curGravity.z)));
+	angles.roll = _toDegrees(atan(curGravity.y / hypot(curGravity.x, curGravity.z)));
+
+	// Combine gyro data to prevent vibrations
+
+	return angles;
 }
 
-/*
-pitch = atan(\frac{-Acc_x}{\sqrt(Acc^{2}_{y} + Acc^{2}_{z})})$
-	- $\theta_{roll} = atan(\frac{Acc_y}{\sqrt(Acc^{2}_{x} + Acc^{2}_{z})})$
-*/
-
 RotationRates IMU::getRotationRate() {
+	RotationRates curRotationRate = _gyro();
 
+	// Subtract offset
+	curRotationRate.pitch -= _gyroOffset.pitch;
+	curRotationRate.roll -= _gyroOffset.roll;
+	curRotationRate.yaw -= _gyroOffset.yaw;
+
+	return curRotationRate;
 }

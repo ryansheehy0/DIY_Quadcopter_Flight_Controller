@@ -3,6 +3,8 @@
 Meant to be a learning project.
 
 ## Future features
-- Sound after init
-- Camera
-- Controller modes(disable motors, etc.)
+1. Safety checks
+2. Disable motors from controller
+3. Sound after init
+4. Send back battery voltage/percentage with transmitter
+5. FPV Camera
