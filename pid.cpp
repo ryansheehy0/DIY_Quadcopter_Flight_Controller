@@ -5,8 +5,6 @@
 double PID::calcOutput(uint64_t deltaTime, double measuredValue, double setPoint) {
 	double error = setPoint - measuredValue;
 
-	deltaTime = deltaTime / 1'000'000; // Convert to seconds
-
 	// Get each term
 	double proportional = _gains.p * error;
 	_integral += _gains.i * error * deltaTime;

@@ -26,6 +26,8 @@ class IMU {
 		RotationRates _gyroOffset;
 		Gravity _accOffset;
 
+		Angles _gyroAngleEstimation;
+
 		const double _PI = 3.141592653589793;
 		double _toRadians(double degrees) { return degrees * (_PI / 180.0); }
 		double _toDegrees(double radians) { return radians * (180.0 / _PI); }
@@ -37,6 +39,6 @@ class IMU {
 	public:
 		IMU();
 
-		Angles getAngles();
+		Angles getAngles(double deltaTime);
 		RotationRates getRotationRate();
 };

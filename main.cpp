@@ -33,16 +33,17 @@ int main() {
 	uint64_t deltaTime;
 
 	while (true) {
-		// Get sensor and controller data
-		curAngles = imu.getAngles();
-		curRotationRates = imu.getRotationRate();
-		controllerValues = controller.getStickValues();
-
 		// Get delta time
 		deltaTime = time_us_64() - prevTime;
+		deltaTime /= 1'000'000; // Convert to seconds
 		prevTime = time_us_64();
 
-		// Get control axes
+		// Get sensor and controller data
+		curRotationRates = imu.getRotationRate();
+		curAngles = imu.getAngles(deltaTime);
+		controllerValues = controller.getStickValues();
+
+		// Calculate control axes
 		double throttle = controllerValues.throttle;
 		double pitch = pitchPID.calcOutput(deltaTime, curAngles.pitch, curRotationRates.pitch, controllerValues.pitch);
 		double roll = rollPID.calcOuput(deltaTime, curAngles.roll, curRotationRates.roll, controllerValues.roll);

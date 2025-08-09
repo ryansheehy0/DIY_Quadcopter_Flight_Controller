@@ -45,7 +45,17 @@ Gravity IMU::_acc() {
 }
 
 // Public ----------------------------------------------------------------------
-Angles IMU::getAngles() {
+Angles IMU::getAngles(double deltaTime) {
+	// Complementary filter
+	const double GYRO_WEIGHT = 0.95;
+	const double ACC_WEIGHT = 1 - GYRO_WEIGHT;
+
+	// Get gyro angle estimation
+	RotationRates curRotationRate = getRotationRate();
+	_gyroAngleEstimation.pitch += curRotationRate.pitch * deltaTime;
+	_gyroAngleEstimation.roll += curRotationRate.roll * deltaTime;
+
+	// Get acc angle estimation
 	Gravity curGravity = _acc();
 
 	// Subtract offset
@@ -54,13 +64,19 @@ Angles IMU::getAngles() {
 	curGravity.z -= _accOffset.z;
 
 	// Convert to pitch and roll
-	Angles angles;
-	angles.pitch = _toDegrees(atan(-curGravity.x / hypot(curGravity.y, curGravity.z)));
-	angles.roll = _toDegrees(atan(curGravity.y / hypot(curGravity.x, curGravity.z)));
+	Angles accAngleEstimation;
+	accAngleEstimation.pitch = _toDegrees(atan(-curGravity.x / hypot(curGravity.y, curGravity.z)));
+	accAngleEstimation.roll = _toDegrees(atan(curGravity.y / hypot(curGravity.x, curGravity.z)));
 
-	// Combine gyro data to prevent vibrations
+	// Combine gyro and acc data
+	Angles angleEstimation;
+	angleEstimation.pitch = GYRO_WEIGHT * _gyroAngleEstimation.pitch + ACC_WEIGHT * accAngleEstimation.pitch;
+	angleEstimation.roll = GYRO_WEIGHT * _gyroAngleEstimation.roll + ACC_WEIGHT * accAngleEstimation.roll;
 
-	return angles;
+	// Update gyro estimation with fused angle estimation
+	_gyroAngleEstimation = angleEstimation;
+
+	return angleEstimation;
 }
 
 RotationRates IMU::getRotationRate() {

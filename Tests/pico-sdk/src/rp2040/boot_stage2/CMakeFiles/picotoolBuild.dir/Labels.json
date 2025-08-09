@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/media/ryan/250GB/Learning/DIY_Quadcopter_Flight_Controller/Tests/pico-sdk/src/rp2040/boot_stage2/CMakeFiles/picotoolBuild"
+		},
+		{
+			"file" : "/media/ryan/250GB/Learning/DIY_Quadcopter_Flight_Controller/Tests/pico-sdk/src/rp2040/boot_stage2/CMakeFiles/picotoolBuild.rule"
+		},
+		{
+			"file" : "/media/ryan/250GB/Learning/DIY_Quadcopter_Flight_Controller/Tests/pico-sdk/src/rp2040/boot_stage2/CMakeFiles/picotoolBuild-complete.rule"
+		},
+		{
+			"file" : "/media/ryan/250GB/Learning/DIY_Quadcopter_Flight_Controller/Tests/pico-sdk/src/rp2040/boot_stage2/picotool/src/picotoolBuild-stamp/picotoolBuild-build.rule"
+		},
+		{
+			"file" : "/media/ryan/250GB/Learning/DIY_Quadcopter_Flight_Controller/Tests/pico-sdk/src/rp2040/boot_stage2/picotool/src/picotoolBuild-stamp/picotoolBuild-configure.rule"
+		},
+		{
+			"file" : "/media/ryan/250GB/Learning/DIY_Quadcopter_Flight_Controller/Tests/pico-sdk/src/rp2040/boot_stage2/picotool/src/picotoolBuild-stamp/picotoolBuild-download.rule"
+		},
+		{
+			"file" : "/media/ryan/250GB/Learning/DIY_Quadcopter_Flight_Controller/Tests/pico-sdk/src/rp2040/boot_stage2/picotool/src/picotoolBuild-stamp/picotoolBuild-install.rule"
+		},
+		{
+			"file" : "/media/ryan/250GB/Learning/DIY_Quadcopter_Flight_Controller/Tests/pico-sdk/src/rp2040/boot_stage2/picotool/src/picotoolBuild-stamp/picotoolBuild-mkdir.rule"
+		},
+		{
+			"file" : "/media/ryan/250GB/Learning/DIY_Quadcopter_Flight_Controller/Tests/pico-sdk/src/rp2040/boot_stage2/picotool/src/picotoolBuild-stamp/picotoolBuild-patch.rule"
+		},
+		{
+			"file" : "/media/ryan/250GB/Learning/DIY_Quadcopter_Flight_Controller/Tests/pico-sdk/src/rp2040/boot_stage2/picotool/src/picotoolBuild-stamp/picotoolBuild-test.rule"
+		},
+		{
+			"file" : "/media/ryan/250GB/Learning/DIY_Quadcopter_Flight_Controller/Tests/pico-sdk/src/rp2040/boot_stage2/picotool/src/picotoolBuild-stamp/picotoolBuild-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"picotoolBuild"
+		],
+		"name" : "picotoolBuild"
+	}
+}
