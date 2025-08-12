@@ -1,0 +1,15 @@
+CC = g++
+CFLAGS =
+LIBS = 
+
+executable: main.o stacked_queue.o
+	$(CC) $(CFLAGS) main.o stacked_queue.o -o executable $(LIBS)
+
+main.o: main.cpp
+	$(CC) $(CFLAGS) -c main.cpp
+
+stacked_queue.o: stacked_queue.cpp
+	$(CC) $(CFLAGS) -c stacked_queue.cpp
+
+clean:
+	rm -f *.o executable

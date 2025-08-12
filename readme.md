@@ -13,6 +13,7 @@
 4. Sound after init
 5. Send back battery voltage/percentage with transmitter
 6. FPV Camera
+	- Thermal camera with switch
 7. Flight computer
 	- Sends camera feed with different objects detected
 	- User selects the object they want to track
@@ -22,6 +23,7 @@
 Other
 - PID tuning test stand
 - Prop guards
+- Pico 2
 
 ## Compile and flash to raspberry pi pico
 - Sources

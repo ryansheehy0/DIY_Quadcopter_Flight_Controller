@@ -2,9 +2,11 @@
 #include "controller.h"
 #include "motor.h"
 #include "pid.h"
-#include <hardware/timer.h>
+#include "pico/stdlib.h"
 
 int main() {
+	stdio_init_all();
+
 	// Hardware objects
 	IMU imu;
 	Controller controller;
@@ -37,6 +39,8 @@ int main() {
 		deltaTime = time_us_64() - prevTime;
 		deltaTime /= 1'000'000; // Convert to seconds
 		prevTime = time_us_64();
+		printf(deltaTime);
+		printf("ms\n");
 
 		// Get sensor and controller data
 		curRotationRates = imu.getRotationRate();
