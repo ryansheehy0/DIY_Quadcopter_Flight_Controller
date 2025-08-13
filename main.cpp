@@ -10,25 +10,22 @@ int main() {
 	// Hardware objects
 	IMU imu;
 	Controller controller;
-	Motor frontMotor;
-	Motor backMotor;
-	Motor leftMotor;
-	Motor rightMotor;
+	Motor frontLeftMotor;
+	Motor frontRightMotor;
+	Motor backLeftMotor;
+	Motor backRightMotor;
+
+	// PID constants
+	const PIDValues pitchGains = {.p = 1.0, .i = 0.02, .d = 20.0};
+	const PIDValues rollGains  = {.p = 1.0, .i = 0.02, .d = 20.0};
+	const PIDValues yawGains   = {.p = 1.0, .i = 0.02, .d = 20.0};
 
 	// PID objects
-	const PIDValues pitchStabilized = {.p = 2.0, .i = 2.0, .d = 2.0};
-	const PIDValues pitchRate       = {.p = 2.0, .i = 2.0, .d = 2.0};
-	StabilizedPID pitchPID(pitchStabilized, pitchRate);
-
-	const PIDValues rollStabilized = {.p = 2.0, .i = 2.0, .d = 2.0};
-	const PIDValues rollRate       = {.p = 2.0, .i = 2.0, .d = 2.0};
-	StabilizedPID rollPID(rollStabilized, rollRate);
-
-	const PIDValues yawRate = {.p = 2.0, .i = 2.0, .d = 2.0};
-	PID yawPID(yawRate);
+	PID pitchPID(pitchGains);
+	PID rollPID(rollGains);
+	PID yawPID(yawGains);
 
 	// Variables
-	Angles curAngles;
 	RotationRates curRotationRates;
 	StickValues controllerValues;
 	uint64_t prevTime = time_us_64();
@@ -40,23 +37,22 @@ int main() {
 		deltaTime /= 1'000'000; // Convert to seconds
 		prevTime = time_us_64();
 		printf(deltaTime);
-		printf("ms\n");
+		printf("s\n");
 
 		// Get sensor and controller data
-		curRotationRates = imu.getRotationRate();
-		curAngles = imu.getAngles(deltaTime);
+		curRotationRates = imu.getRotationRates();
 		controllerValues = controller.getStickValues();
 
 		// Calculate control axes
 		double throttle = controllerValues.throttle;
-		double pitch = pitchPID.calcOutput(deltaTime, curAngles.pitch, curRotationRates.pitch, controllerValues.pitch);
-		double roll = rollPID.calcOuput(deltaTime, curAngles.roll, curRotationRates.roll, controllerValues.roll);
-		double yaw = yawPID.calcOutput(deltaTime, curRotationRates.yaw, controllerValues.yaw);
+		double pitch = pitchPID.compute(deltaTime, curRotationRates.pitch, controllerValues.pitch);
+		double roll = rollPID.compute(deltaTime, curRotationRates.roll, controllerValues.roll);
+		double yaw = yawPID.compute(deltaTime, curRotationRates.yaw, controllerValues.yaw);
 
 		// Set motor outputs
-		frontMotor.setOutput(throttle - roll - pitch - yaw);
-		backMotor.setOutput( throttle + roll + pitch - yaw);
-		leftMotor.setOutput( throttle - roll + pitch + yaw);
-		rightMotor.setOutput(throttle + roll - pitch + yaw);
+		frontLeftMotor.setOutput(throttle - roll - pitch - yaw);
+		frontRightMotor.setOutput(throttle + roll + pitch - yaw);
+		backLeftMotor.setOutput(throttle - roll + pitch + yaw);
+		backRightMotor.setOutput(throttle + roll - pitch + yaw);
 	}
 }

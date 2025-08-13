@@ -17,7 +17,7 @@ class PID {
 	public:
 		PID(PIDValues gains) : _gains(gains) {}
 
-		double calcOutput(uint64_t deltaTime, double measuredValue, double setPoint);
+		double compute(uint64_t deltaTime, double measuredValue, double setPoint);
 };
 
 class StabilizedPID {
@@ -28,5 +28,5 @@ class StabilizedPID {
 	public:
 		StabilizedPID(PIDValues stabilizedGains, PIDValues rateGains) : _stabilizedPID(stabilizedGains), _ratePID(rateGains) {}
 
-		double calcOutput(uint64_t deltaTime, double measuredAngle, double measuredRotationRate, double controllerSetPoint);
+		double compute(uint64_t deltaTime, double measuredAngle, double measuredRotationRate, double controllerSetPoint);
 };

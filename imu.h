@@ -1,5 +1,8 @@
 #pragma once
 
+#include "moving_average.h"
+#include <cstddef>
+
 struct Angles { // In degrees
 	double pitch = 0;
 	double roll = 0;
@@ -11,10 +14,10 @@ struct RotationRates { // In degrees per second
 	double yaw = 0;
 };
 
-struct Gravity { // In m/s^2
+struct Gravity { // In m/s^2. What unit?
 	double x = 0;
 	double y = 0;
-	double z = 0;
+	double z = 1;
 };
 
 // gyro - gyroscope
@@ -28,6 +31,10 @@ class IMU {
 
 		Angles _gyroAngleEstimation;
 
+		MovingAverage<11> _accAvgX;
+		MovingAverage<11> _accAvgY;
+		MovingAverage<11> _accAvgZ;
+
 		const double _PI = 3.141592653589793;
 		double _toRadians(double degrees) { return degrees * (_PI / 180.0); }
 		double _toDegrees(double radians) { return radians * (180.0 / _PI); }
@@ -40,5 +47,5 @@ class IMU {
 		IMU();
 
 		Angles getAngles(double deltaTime);
-		RotationRates getRotationRate();
+		RotationRates getRotationRates();
 };

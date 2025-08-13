@@ -2,7 +2,7 @@
 
 // Public ----------------------------------------------------------------------
 
-double PID::calcOutput(uint64_t deltaTime, double measuredValue, double setPoint) {
+double PID::compute(uint64_t deltaTime, double measuredValue, double setPoint) {
 	double error = setPoint - measuredValue;
 
 	// Get each term
@@ -14,12 +14,12 @@ double PID::calcOutput(uint64_t deltaTime, double measuredValue, double setPoint
 	return proportional + _integral + derivative;
 }
 
-double StabilizedPID::calcOutput(
+double StabilizedPID::compute(
 	uint64_t deltaTime,
 	double measuredAngle,
 	double measuredRotationRate,
 	double controllerSetPoint
 ) {
-	double rotationRateSetPoint = _stabilizedPID.calcOutput(deltaTime, measuredAngle, controllerSetPoint);
-	return _ratePID.calcOutput(deltaTime, measuredRotationRate, rotationRateSetPoint);
+	double rotationRateSetPoint = _stabilizedPID.compute(deltaTime, measuredAngle, controllerSetPoint);
+	return _ratePID.compute(deltaTime, measuredRotationRate, rotationRateSetPoint);
 }

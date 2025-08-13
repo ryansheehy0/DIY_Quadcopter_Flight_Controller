@@ -13,7 +13,6 @@ IMU::IMU() {
 		avgRates.pitch += gyroRates.pitch;
 		avgRates.roll += gyroRates.roll;
 		avgRates.yaw += gyroRates.yaw;
-		// Timer daley?
 	}
 	_gyroOffset.pitch = avgRates.pitch / CALIBRATION_SAMPLES;
 	_gyroOffset.roll = avgRates.roll / CALIBRATION_SAMPLES;
@@ -26,7 +25,6 @@ IMU::IMU() {
 		avgGravity.x += accData.x;
 		avgGravity.y += accData.y;
 		avgGravity.z += accData.z;
-		// Timer daley?
 	}
 	_accOffset.x = avgGravity.x / CALIBRATION_SAMPLES;
 	_accOffset.y = avgGravity.y / CALIBRATION_SAMPLES;
@@ -42,6 +40,10 @@ RotationRates IMU::_gyro() {
 Gravity IMU::_acc() {
 	// Get acc data
 	// Convert to proper units
+	_accAvgX.popAndPush(0);
+	_accAvgY.popAndPush(0);
+	_accAvgZ.popAndPush(0);
+	return {_accAvgX.average(), _accAvgY.average(), _accAvgZ.average()};
 }
 
 // Public ----------------------------------------------------------------------
@@ -51,7 +53,7 @@ Angles IMU::getAngles(double deltaTime) {
 	const double ACC_WEIGHT = 1 - GYRO_WEIGHT;
 
 	// Get gyro angle estimation
-	RotationRates curRotationRate = getRotationRate();
+	RotationRates curRotationRate = getRotationRates();
 	_gyroAngleEstimation.pitch += curRotationRate.pitch * deltaTime;
 	_gyroAngleEstimation.roll += curRotationRate.roll * deltaTime;
 
@@ -73,13 +75,13 @@ Angles IMU::getAngles(double deltaTime) {
 	angleEstimation.pitch = GYRO_WEIGHT * _gyroAngleEstimation.pitch + ACC_WEIGHT * accAngleEstimation.pitch;
 	angleEstimation.roll = GYRO_WEIGHT * _gyroAngleEstimation.roll + ACC_WEIGHT * accAngleEstimation.roll;
 
-	// Update gyro estimation with fused angle estimation
+	// Update gyro estimation with fused angle estimation to prevent drift over time
 	_gyroAngleEstimation = angleEstimation;
 
 	return angleEstimation;
 }
 
-RotationRates IMU::getRotationRate() {
+RotationRates IMU::getRotationRates() {
 	RotationRates curRotationRate = _gyro();
 
 	// Subtract offset
