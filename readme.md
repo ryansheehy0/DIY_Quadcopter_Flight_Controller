@@ -13,12 +13,12 @@
 4. Sound after init
 5. Send back battery voltage/percentage with transmitter
 6. FPV Camera
-	- Thermal camera with switch
-7. Flight computer
+7. Combine cheap thermal camera with regular camera.
+8. Flight computer
 	- Sends camera feed with different objects detected
 	- User selects the object they want to track
 	- The drone follows object, keeping its distance(estimate size of object)
-8. Changing frequencies for controller and boosting signal strength.
+9. Changing frequencies for controller and boosting signal strength.
 
 Other
 - PID tuning test stand
