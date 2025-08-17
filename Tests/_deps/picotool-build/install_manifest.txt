@@ -1,5 +1,0 @@
-/media/ryan/250GB/Learning/DIY_Quadcopter_Flight_Controller/Tests/_deps/picotool/picotool
-/media/ryan/250GB/Learning/DIY_Quadcopter_Flight_Controller/Tests/_deps/picotool/picotoolTargets.cmake
-/media/ryan/250GB/Learning/DIY_Quadcopter_Flight_Controller/Tests/_deps/picotool/picotoolTargets-release.cmake
-/media/ryan/250GB/Learning/DIY_Quadcopter_Flight_Controller/Tests/_deps/picotool/picotoolConfig.cmake
-/media/ryan/250GB/Learning/DIY_Quadcopter_Flight_Controller/Tests/_deps/picotool/picotoolConfigVersion.cmake
