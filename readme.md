@@ -60,9 +60,7 @@ cmake_minimum_required(VERSION 3.20)
 include($ENV{HOME}/pico/pico-sdk/external/pico_sdk_import.cmake)
 project(pico-cpp LANGUAGES C CXX ASM)
 
-if (DEFINED PICO_SDK_VERSION_STRING)
-    pico_sdk_init()
-endif()
+pico_sdk_init()
 
 add_library(warnings INTERFACE)
 target_compile_options(warnings INTERFACE "-Wall" "-Wextra" "-Wno-psabi")
@@ -70,6 +68,7 @@ target_compile_options(warnings INTERFACE "-Wall" "-Wextra" "-Wno-psabi")
 add_executable(hello "hello.cpp")
 target_compile_features(hello PRIVATE cxx_std_20)
 target_link_libraries(hello PRIVATE warnings pico_stdlib hardware_adc)
+# Add other libraries: hardware_spi
 
 pico_enable_stdio_usb(hello 1)
 pico_enable_stdio_uart(hello 0)
@@ -79,12 +78,12 @@ pico_add_extra_outputs(hello)
 5. Run cmake commands
 
 ```sh
-cmake -S . -B build --toolchain ~/opt/x-tools/arm-pico-eabi/arm-pico-eabi.toolchain.cmake
+cmake -S . -B build
 cmake --build build -j$(nproc)
 ```
 
-6. Run `make`
+<!-- --toolchain ~/opt/x-tools/arm-pico-eabi/arm-pico-eabi.toolchain.cmake -->
 
-7. Plug in Pico while pressing the program button. The copy and past the compiled UF2 file into the Pico's drive.
+6. Plug in Pico while pressing the program button. The copy and past the compiled UF2 file into the Pico's drive.
 
-8. You can see console output with `screen /dev/ttyACM0 115200`
+7. You can see console output with `screen /dev/ttyACM0 115200`
