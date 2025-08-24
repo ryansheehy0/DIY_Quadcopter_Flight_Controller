@@ -1,32 +1,39 @@
 #pragma once
 
-#include "moving_average.h"
-#include <cstddef>
-#include <stdio.h>
+#include <cstddef> // size_t
 #include "pico/stdlib.h"
+#include "hardware/i2c.h"
+#include "moving_average.h"
 
-struct Angles { // Units?
-	int16_t pitch = 0;
-	int16_t roll = 0;
+struct Angles { // In degrees
+	double pitch = 0;
+	double roll = 0;
 };
 
-struct RotationRates { // Units?
-	int16_t pitch = 0;
-	int16_t roll = 0;
-	int16_t yaw = 0;
+struct RotationRates { // In degrees/second
+	double pitch = 0;
+	double roll = 0;
+	double yaw = 0;
 };
 
-struct Gravity { // Units?
-	int16_t x = 0;
-	int16_t y = 0;
-	int16_t z = 1;
+struct Gravity {
+	double x = 0;
+	double y = 0;
+	double z = 1;
 };
+
+struct RawData {
+	int16_t data1;
+	int16_t data2;
+	int16_t data3;
+}
 
 // gyro - gyroscope
 // acc - accelerometer
 
 class IMU {
 	private:
+		// I2C consts
 		constexpr uint _SCL_PIN = 17;
 		constexpr uint _SDA_PIN = 16;
 		constexpr uint8_t _BMI160_ADDR = 0x68; // Connect BMI160's SAO to GND
@@ -39,7 +46,6 @@ class IMU {
 		constexpr uint8_t _ACC_NORMAL_MODE = 0x11;
 		constexpr uint8_t _GYRO_ADDR = 0x0C;
 		constexpr uint8_t _ACC_ADDR = 0x12;
-		constexpr int _CALIBRATION_SAMPLES = 2000;
 
 		// Offsets subtracted from sensor data.
 		RotationRates _gyroOffset;
@@ -51,14 +57,14 @@ class IMU {
 		MovingAverage<11> _accAvgY;
 		MovingAverage<11> _accAvgZ;
 
-		const double _PI = 3.141592653589793;
+		constexpr double _PI = 3.141592653589793;
 		double _toRadians(double degrees) { return degrees * (_PI / 180.0); }
 		double _toDegrees(double radians) { return radians * (180.0 / _PI); }
 
-		int16_t _combineBytes(uint8_t lsb, uint8_t msb) const { return ((int16_t)msb << 8) | lsb; }
+		int16_t _combineBytes(uint8_t lsb, uint8_t msb) const { return (int16_t(msb) << 8) | lsb; }
 
 		// Get sensor data
-		void _getData(uint8_t reg, int16_t* data1, int16_t* data2, int16_t* data3) const;
+		RawData _getRawData(uint8_t reg) const;
 		RotationRates _gyro();
 		Gravity _acc();
 

@@ -38,12 +38,12 @@ StickValues Controller::getStickValues() {
 
 	// Convert channels to StickValues. Mode 2
 	StickValues newStickValues;
-	newStickValues.roll = channels[0];
-	newStickValues.pitch = channels[1];
-	newStickValues.throttle = channels[2];
-	newStickValues.yaw = channels[3];
-	newStickValues.leftPot = channels[4];
-	newStickValues.rightPot = channels[5];
+	newStickValues.roll = channels[0] - 1500; // Right stick left/right
+	newStickValues.pitch = channels[1] - 1500; // Right stick up/down
+	newStickValues.throttle = channels[2]; // Left stick up/down
+	newStickValues.yaw = channels[3] - 1500; // Left stick left/down
+	newStickValues.leftPot = channels[4] - 1000;
+	newStickValues.rightPot = channels[5] - 1000;
 
 	// Return
 	_prevStickValues = newStickValues;

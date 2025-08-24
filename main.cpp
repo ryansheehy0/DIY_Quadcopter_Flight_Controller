@@ -3,6 +3,7 @@
 #include "motor.h"
 #include "pid.h"
 #include "pico/stdlib.h"
+#include 'normalize_sensor.h'
 
 int main() {
 	stdio_init_all();
@@ -42,6 +43,9 @@ int main() {
 		// Get sensor and controller data
 		curRotationRates = imu.getRotationRates();
 		controllerValues = controller.getStickValues();
+
+		// Normalize sensor data
+		//normalizedRotationRates = NormalizeIMU::
 
 		// Calculate control axes
 		double throttle = controllerValues.throttle;

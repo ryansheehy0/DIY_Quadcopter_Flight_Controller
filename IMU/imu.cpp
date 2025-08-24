@@ -1,5 +1,5 @@
 #include "imu.h"
-#include <cmath>
+#include <cmath> // atan, hypot
 
 // Constructor -----------------------------------------------------------------
 IMU::IMU() {
@@ -19,6 +19,9 @@ IMU::IMU() {
 	uint8_t accCmd[2] = {_CMD_ADDR, _ACC_NORMAL_MODE};
 	i2c_write_blocking(_I2C, _BMI160_ADDR, accCmd, 2, false);
 	sleep_ms(500);
+
+	// Calibrate sensors
+	constexpr int _CALIBRATION_SAMPLES = 2000;
 
 	// Calibrate gyroscope
 	RotationRates avgRates;
@@ -58,6 +61,8 @@ void IMU::_getData(uint8_t reg, int16_t* data1, int16_t* data2, int16_t* data3) 
 RotationRates IMU::_gyro() {
 	RotationRates gyroData;
 	_getData(_GYRO_ADDR, &gyroData.pitch, &gyroData.roll, &gyroData.yaw);
+	// 
+	// 1 LSB = 1/16.4 degrees/sec
 	return gyroData;
 }
 
@@ -67,14 +72,15 @@ Gravity IMU::_acc() {
 	_accAvgX.popAndPush(accData.x);
 	_accAvgY.popAndPush(accData.y);
 	_accAvgZ.popAndPush(accData.z);
+	// 1 LSB = +-2g
 	return {_accAvgX.average(), _accAvgY.average(), _accAvgZ.average()};
 }
 
 // Public ----------------------------------------------------------------------
 Angles IMU::getAngles(double deltaTime) {
 	// Complementary filter
-	const double GYRO_WEIGHT = 0.95;
-	const double ACC_WEIGHT = 1 - GYRO_WEIGHT;
+	constexpr double GYRO_WEIGHT = 0.95;
+	constexpr double ACC_WEIGHT = 1 - GYRO_WEIGHT;
 
 	// Get gyro angle estimation
 	RotationRates curRotationRate = getRotationRates();

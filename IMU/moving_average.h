@@ -1,4 +1,4 @@
-#include <cstddef>
+#include <cstddef> // size_t
 
 template <size_t _size>
 class MovingAverage {

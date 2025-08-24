@@ -15,12 +15,31 @@
 6. FPV Camera
 7. Combine cheap thermal camera with regular camera.
 	- Pot to change opacity.
+	- Use Open CV
 8. Flight computer
 	- Sends camera feed with different objects detected
 	- User selects the object they want to track
 	- The drone follows object, keeping its distance(estimate size of object)
 9. Changing frequencies for controller and boosting signal strength.
 	- Frequency hopping
+
+- Left pot - Change opacity between regular and thermal camera.
+	- Left pot could also change the threshold for temps that are gotten, only displaying hot spots.
+- Right pot - Select the object you want to track.
+	- It can also track using the heat source from the thermal camera.
+	- Use switch to select the one you want to track.
+		- Switch down means tracking and switch up means not tracking.
+
+- Switches
+	- Left
+		- Arm/disarm
+		- Altitude hold or not
+	- Right
+		- Don't track object, track object from far away, track object from close(crash into object).
+		- Release/activate payload or not
+			- Drop something
+			- Produce sound
+			- Produce lights, etc.
 
 Other
 - PID tuning test stand
