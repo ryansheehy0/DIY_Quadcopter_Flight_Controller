@@ -107,4 +107,8 @@ cmake --build build -j$(nproc)
 
 6. Plug in Pico while pressing the program button. The copy and past the compiled UF2 file into the Pico's drive.
 
-7. You can see console output with `screen /dev/ttyACM0 115200`
+7. You can see console output with:
+
+```sh
+screen /dev/ttyACM0 115200
+```

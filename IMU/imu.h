@@ -26,7 +26,7 @@ struct RawData {
 	int16_t data1;
 	int16_t data2;
 	int16_t data3;
-}
+};
 
 // gyro - gyroscope
 // acc - accelerometer
@@ -34,18 +34,8 @@ struct RawData {
 class IMU {
 	private:
 		// I2C consts
-		constexpr uint _SCL_PIN = 17;
-		constexpr uint _SDA_PIN = 16;
-		constexpr uint8_t _BMI160_ADDR = 0x68; // Connect BMI160's SAO to GND
-		constexpr i2c_inst_t* _I2C = i2c0;
-		constexpr uint _BAUD_RATE = 400'000;
-
-		// Addresses
-		constexpr uint8_t _CMD_ADDR = 0x7E;
-		constexpr uint8_t _GYRO_NORMAL_MODE = 0x15;
-		constexpr uint8_t _ACC_NORMAL_MODE = 0x11;
-		constexpr uint8_t _GYRO_ADDR = 0x0C;
-		constexpr uint8_t _ACC_ADDR = 0x12;
+		static constexpr uint8_t _BMI160_ADDR = 0x68; // Connect BMI160's SAO to GND
+		static constexpr i2c_inst_t* _I2C = i2c0;
 
 		// Offsets subtracted from sensor data.
 		RotationRates _gyroOffset;
@@ -57,7 +47,7 @@ class IMU {
 		MovingAverage<11> _accAvgY;
 		MovingAverage<11> _accAvgZ;
 
-		constexpr double _PI = 3.141592653589793;
+		static constexpr double _PI = 3.141592653589793;
 		double _toRadians(double degrees) { return degrees * (_PI / 180.0); }
 		double _toDegrees(double radians) { return radians * (180.0 / _PI); }
 
@@ -71,6 +61,6 @@ class IMU {
 	public:
 		IMU();
 
-		Angles getAngles(double deltaTime);
 		RotationRates getRotationRates();
+		Angles getAngles(double deltaTime);
 };

@@ -3,12 +3,12 @@
 template <size_t _size>
 class MovingAverage {
 	private:
-		int _arr[_size];
+		double _arr[_size];
 		size_t _startIndex;
-		int _sum;
+		double _sum;
 
 	public:
-		MovingAverage(int initalVal = 0) {
+		MovingAverage(double initalVal = 0) {
 			_startIndex = 0;
 			_sum = 0;
 			for (size_t i = 0; i < _size; i++) {
@@ -17,9 +17,9 @@ class MovingAverage {
 			}
 		}
 
-		void popAndPush(int newVal) {
+		void popAndPush(double newVal) {
 			// Pop
-			int removedVal = _arr[_startIndex];
+			double removedVal = _arr[_startIndex];
 			_sum -= removedVal;
 			// Push
 			_arr[_startIndex] = newVal;
@@ -28,7 +28,7 @@ class MovingAverage {
 			_startIndex = (_startIndex + 1) % _size;
 		}
 
-		int average() const {
+		double average() const {
 			return _sum / _size;
 		}
 };

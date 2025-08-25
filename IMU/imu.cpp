@@ -3,80 +3,125 @@
 
 // Constructor -----------------------------------------------------------------
 IMU::IMU() {
+	// I2C consts
+	constexpr uint SCL_PIN = 17;
+	constexpr uint SDA_PIN = 16;
+	constexpr uint BAUD_RATE = 400'000;
+
+	// Addresses
+	constexpr uint8_t CMD_ADDR = 0x7E;
+	constexpr uint8_t GYRO_NORMAL_MODE = 0x15;
+	constexpr uint8_t ACC_NORMAL_MODE = 0x11;
+
+	// Other
+	constexpr int CALIBRATION_SAMPLES = 2000;
+
 	// Init I2C
-	i2c_init(_I2C, _BAUD_RATE);
-	gpio_set_function(_SCL_PIN, GPIO_FUNC_I2C);
-	gpio_set_function(_SDA_PIN, GPIO_FUNC_I2C);
-	gpio_pull_up(_SCL_PIN);
-	gpio_pull_up(_SDA_PIN);
+	i2c_init(_I2C, BAUD_RATE);
+	gpio_set_function(SCL_PIN, GPIO_FUNC_I2C);
+	gpio_set_function(SDA_PIN, GPIO_FUNC_I2C);
+	gpio_pull_up(SCL_PIN);
+	gpio_pull_up(SDA_PIN);
 
 	// Set Gyro to normal mode
-	uint8_t gyroCmd[2] = {_CMD_ADDR, _GYRO_NORMAL_MODE};
+	uint8_t gyroCmd[2] = {CMD_ADDR, GYRO_NORMAL_MODE};
 	i2c_write_blocking(_I2C, _BMI160_ADDR, gyroCmd, 2, false);
 	sleep_ms(500);
 
 	// Set Acc to normal mode
-	uint8_t accCmd[2] = {_CMD_ADDR, _ACC_NORMAL_MODE};
+	uint8_t accCmd[2] = {CMD_ADDR, ACC_NORMAL_MODE};
 	i2c_write_blocking(_I2C, _BMI160_ADDR, accCmd, 2, false);
 	sleep_ms(500);
 
-	// Calibrate sensors
-	constexpr int _CALIBRATION_SAMPLES = 2000;
-
 	// Calibrate gyroscope
 	RotationRates avgRates;
-	for (int i = 0; i < _CALIBRATION_SAMPLES; i++) {
+	for (int i = 0; i < CALIBRATION_SAMPLES; i++) {
 		RotationRates gyroRates = _gyro();
 		avgRates.pitch += gyroRates.pitch;
 		avgRates.roll += gyroRates.roll;
 		avgRates.yaw += gyroRates.yaw;
 	}
-	_gyroOffset.pitch = avgRates.pitch / _CALIBRATION_SAMPLES;
-	_gyroOffset.roll = avgRates.roll / _CALIBRATION_SAMPLES;
-	_gyroOffset.yaw = avgRates.yaw / _CALIBRATION_SAMPLES;
+	_gyroOffset.pitch = avgRates.pitch / CALIBRATION_SAMPLES;
+	_gyroOffset.roll = avgRates.roll / CALIBRATION_SAMPLES;
+	_gyroOffset.yaw = avgRates.yaw / CALIBRATION_SAMPLES;
 
 	// Calibrate accelerometer
 	Gravity avgGravity;
-	for (int i = 0; i < _CALIBRATION_SAMPLES; i++) {
+	for (int i = 0; i < CALIBRATION_SAMPLES; i++) {
 		Gravity accData = _acc();
 		avgGravity.x += accData.x;
 		avgGravity.y += accData.y;
 		avgGravity.z += accData.z;
 	}
-	_accOffset.x = avgGravity.x / _CALIBRATION_SAMPLES;
-	_accOffset.y = avgGravity.y / _CALIBRATION_SAMPLES;
-	_accOffset.z = avgGravity.z / _CALIBRATION_SAMPLES;
+	_accOffset.x = avgGravity.x / CALIBRATION_SAMPLES;
+	_accOffset.y = avgGravity.y / CALIBRATION_SAMPLES;
+	_accOffset.z = avgGravity.z / CALIBRATION_SAMPLES;
 }
 
 // Private ---------------------------------------------------------------------
-void IMU::_getData(uint8_t reg, int16_t* data1, int16_t* data2, int16_t* data3) const {
+RawData IMU::_getRawData(uint8_t reg) const {
+	RawData rawData;
 	uint8_t buffer[6];
 	i2c_write_blocking(_I2C, _BMI160_ADDR, &reg, 1, true);
 	i2c_read_blocking(_I2C, _BMI160_ADDR, buffer, 6, false);
-	*data1 = _combineBytes(buffer[0], buffer[1]);
-	*data2 = _combineBytes(buffer[2], buffer[3]);
-	*data3 = _combineBytes(buffer[4], buffer[5]);
+	rawData.data1 = _combineBytes(buffer[0], buffer[1]);
+	rawData.data2 = _combineBytes(buffer[2], buffer[3]);
+	rawData.data3 = _combineBytes(buffer[4], buffer[5]);
+	return rawData;
 }
 
 RotationRates IMU::_gyro() {
+	// Gyro consts
+	constexpr uint8_t GYRO_ADDR = 0x0C;
+	constexpr double LSB_TO_DEG_PER_SEC = 16.4; // 1 gyro LSB = 1/16.4 degrees/sec
+
+	// Get raw data
+	RawData gyroRawData = _getRawData(GYRO_ADDR);
+
+	// Convert raw data to degrees/sec
 	RotationRates gyroData;
-	_getData(_GYRO_ADDR, &gyroData.pitch, &gyroData.roll, &gyroData.yaw);
-	// 
-	// 1 LSB = 1/16.4 degrees/sec
+	gyroData.roll = gyroRawData.data1 / LSB_TO_DEG_PER_SEC;
+	gyroData.pitch = gyroRawData.data2 / LSB_TO_DEG_PER_SEC;
+	gyroData.yaw = gyroRawData.data3 / LSB_TO_DEG_PER_SEC;
+
 	return gyroData;
 }
 
 Gravity IMU::_acc() {
+	// Acc consts
+	constexpr uint8_t ACC_ADDR = 0x12;
+	constexpr double LSB_TO_GRAVITY = 16'384; // 1 acc LSB = 1/16'384 g
+
+	// Get raw data
+	RawData accRawData = _getRawData(ACC_ADDR);
+
+	// Convert raw data to gravity
 	Gravity accData;
-	_getData(_ACC_ADDR, &accData.x, &accData.y, &accData.z);
+	accData.x = accRawData.data1 / LSB_TO_GRAVITY;
+	accData.y = accRawData.data2 / LSB_TO_GRAVITY;
+	accData.z = accRawData.data3 / LSB_TO_GRAVITY;
+
+	return accData;
+
+	// Calculate and return average
 	_accAvgX.popAndPush(accData.x);
 	_accAvgY.popAndPush(accData.y);
 	_accAvgZ.popAndPush(accData.z);
-	// 1 LSB = +-2g
 	return {_accAvgX.average(), _accAvgY.average(), _accAvgZ.average()};
 }
 
 // Public ----------------------------------------------------------------------
+RotationRates IMU::getRotationRates() {
+	RotationRates curRotationRate = _gyro();
+
+	// Subtract offsets
+	curRotationRate.pitch -= _gyroOffset.pitch;
+	curRotationRate.roll -= _gyroOffset.roll;
+	curRotationRate.yaw -= _gyroOffset.yaw;
+
+	return curRotationRate;
+}
+
 Angles IMU::getAngles(double deltaTime) {
 	// Complementary filter
 	constexpr double GYRO_WEIGHT = 0.95;
@@ -97,8 +142,10 @@ Angles IMU::getAngles(double deltaTime) {
 
 	// Convert to pitch and roll
 	Angles accAngleEstimation;
-	accAngleEstimation.pitch = _toDegrees(atan(-curGravity.x / hypot(curGravity.y, curGravity.z)));
-	accAngleEstimation.roll = _toDegrees(atan(curGravity.y / hypot(curGravity.x, curGravity.z)));
+	// accAngleEstimation.pitch = _toDegrees(atan(-curGravity.x / hypot(curGravity.y, curGravity.z)));
+	// accAngleEstimation.roll = _toDegrees(atan(curGravity.y / hypot(curGravity.x, curGravity.z)));
+	accAngleEstimation.pitch = _toDegrees(atan2(-curGravity.x, hypot(curGravity.y, curGravity.z)));
+	accAngleEstimation.roll = _toDegrees(atan2(curGravity.y, hypot(curGravity.x, curGravity.z)));
 
 	// Combine gyro and acc data
 	Angles angleEstimation;
@@ -109,15 +156,4 @@ Angles IMU::getAngles(double deltaTime) {
 	_gyroAngleEstimation = angleEstimation;
 
 	return angleEstimation;
-}
-
-RotationRates IMU::getRotationRates() {
-	RotationRates curRotationRate = _gyro();
-
-	// Subtract offset
-	curRotationRate.pitch -= _gyroOffset.pitch;
-	curRotationRate.roll -= _gyroOffset.roll;
-	curRotationRate.yaw -= _gyroOffset.yaw;
-
-	return curRotationRate;
 }
