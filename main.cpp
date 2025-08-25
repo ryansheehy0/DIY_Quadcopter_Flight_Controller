@@ -1,9 +1,10 @@
-#include "imu.h"
+#include "IMU/imu.h"
 #include "controller.h"
 #include "motor.h"
 #include "pid.h"
 #include "pico/stdlib.h"
-#include 'normalize_sensor.h'
+#include <stdio.h>
+#include "normalize_sensor.h"
 
 int main() {
 	stdio_init_all();
@@ -28,20 +29,19 @@ int main() {
 
 	// Variables
 	RotationRates curRotationRates;
+	//Angles curAngles;
 	StickValues controllerValues;
 	uint64_t prevTime = time_us_64();
-	uint64_t deltaTime;
+	double deltaTime = 0;
 
 	while (true) {
 		// Get delta time
-		deltaTime = time_us_64() - prevTime;
-		deltaTime /= 1'000'000; // Convert to seconds
+		deltaTime = (time_us_64() - prevTime) / 1'000'000; // Convert to seconds
 		prevTime = time_us_64();
-		printf(deltaTime);
-		printf("s\n");
 
 		// Get sensor and controller data
 		curRotationRates = imu.getRotationRates();
+		// curAngles = imu.getAngles(deltaTime);
 		controllerValues = controller.getStickValues();
 
 		// Normalize sensor data

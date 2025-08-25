@@ -12,6 +12,8 @@ IMU::IMU() {
 	constexpr uint8_t CMD_ADDR = 0x7E;
 	constexpr uint8_t GYRO_NORMAL_MODE = 0x15;
 	constexpr uint8_t ACC_NORMAL_MODE = 0x11;
+	constexpr uint8_t ACC_RANGE = 0x41;
+	constexpr uint8_t ACC_RANGE_8G = 0x08;
 
 	// Other
 	constexpr int CALIBRATION_SAMPLES = 2000;
@@ -31,6 +33,11 @@ IMU::IMU() {
 	// Set Acc to normal mode
 	uint8_t accCmd[2] = {CMD_ADDR, ACC_NORMAL_MODE};
 	i2c_write_blocking(_I2C, _BMI160_ADDR, accCmd, 2, false);
+	sleep_ms(500);
+
+	// Set Acc range to +/- 8g
+	uint8_t accRangeCmd[2] = {ACC_RANGE, ACC_RANGE_8G};
+	i2c_write_blocking(_I2C, _BMI160_ADDR, accRangeCmd, 2, false);
 	sleep_ms(500);
 
 	// Calibrate gyroscope
@@ -55,7 +62,7 @@ IMU::IMU() {
 	}
 	_accOffset.x = avgGravity.x / CALIBRATION_SAMPLES;
 	_accOffset.y = avgGravity.y / CALIBRATION_SAMPLES;
-	_accOffset.z = avgGravity.z / CALIBRATION_SAMPLES;
+	_accOffset.z = (avgGravity.z / CALIBRATION_SAMPLES) + 1;
 }
 
 // Private ---------------------------------------------------------------------
@@ -90,7 +97,7 @@ RotationRates IMU::_gyro() {
 Gravity IMU::_acc() {
 	// Acc consts
 	constexpr uint8_t ACC_ADDR = 0x12;
-	constexpr double LSB_TO_GRAVITY = 16'384; // 1 acc LSB = 1/16'384 g
+	constexpr double LSB_TO_GRAVITY = 4096; // 1 acc LSB = 1/4096 g
 
 	// Get raw data
 	RawData accRawData = _getRawData(ACC_ADDR);
@@ -140,19 +147,8 @@ Angles IMU::getAngles(double deltaTime) {
 
 	// Convert to pitch and roll
 	Angles accAngleEstimation;
-	// accAngleEstimation.pitch = _toDegrees(atan(-curGravity.x / hypot(curGravity.y, curGravity.z)));
-	// accAngleEstimation.roll = _toDegrees(atan(curGravity.y / hypot(curGravity.x, curGravity.z)));
-	// accAngleEstimation.pitch = _toDegrees(atan2(-curGravity.x, hypot(curGravity.y, curGravity.z)));
-	// accAngleEstimation.roll = _toDegrees(atan2(curGravity.y, hypot(curGravity.x, curGravity.z)));
-	if (fabs(curGravity.z) > fabs(curGravity.y)) {
-			// use z as reference
-			accAngleEstimation.pitch = _toDegrees(atan2(-curGravity.x, curGravity.z));
-			accAngleEstimation.roll  = _toDegrees(atan2(curGravity.y, curGravity.z));
-	} else {
-			// use y as reference
-			accAngleEstimation.pitch = _toDegrees(atan2(-curGravity.x, curGravity.y));
-			accAngleEstimation.roll  = _toDegrees(atan2(curGravity.z, curGravity.y));
-	}
+	accAngleEstimation.pitch = _toDegrees(atan2(-curGravity.x, hypot(curGravity.y, curGravity.z)));
+	accAngleEstimation.roll = _toDegrees(atan2(curGravity.y, hypot(curGravity.x, curGravity.z)));
 
 	// Combine gyro and acc data
 	Angles angleEstimation;
