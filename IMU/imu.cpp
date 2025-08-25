@@ -101,8 +101,6 @@ Gravity IMU::_acc() {
 	accData.y = accRawData.data2 / LSB_TO_GRAVITY;
 	accData.z = accRawData.data3 / LSB_TO_GRAVITY;
 
-	return accData;
-
 	// Calculate and return average
 	_accAvgX.popAndPush(accData.x);
 	_accAvgY.popAndPush(accData.y);
@@ -144,8 +142,17 @@ Angles IMU::getAngles(double deltaTime) {
 	Angles accAngleEstimation;
 	// accAngleEstimation.pitch = _toDegrees(atan(-curGravity.x / hypot(curGravity.y, curGravity.z)));
 	// accAngleEstimation.roll = _toDegrees(atan(curGravity.y / hypot(curGravity.x, curGravity.z)));
-	accAngleEstimation.pitch = _toDegrees(atan2(-curGravity.x, hypot(curGravity.y, curGravity.z)));
-	accAngleEstimation.roll = _toDegrees(atan2(curGravity.y, hypot(curGravity.x, curGravity.z)));
+	// accAngleEstimation.pitch = _toDegrees(atan2(-curGravity.x, hypot(curGravity.y, curGravity.z)));
+	// accAngleEstimation.roll = _toDegrees(atan2(curGravity.y, hypot(curGravity.x, curGravity.z)));
+	if (fabs(curGravity.z) > fabs(curGravity.y)) {
+			// use z as reference
+			accAngleEstimation.pitch = _toDegrees(atan2(-curGravity.x, curGravity.z));
+			accAngleEstimation.roll  = _toDegrees(atan2(curGravity.y, curGravity.z));
+	} else {
+			// use y as reference
+			accAngleEstimation.pitch = _toDegrees(atan2(-curGravity.x, curGravity.y));
+			accAngleEstimation.roll  = _toDegrees(atan2(curGravity.z, curGravity.y));
+	}
 
 	// Combine gyro and acc data
 	Angles angleEstimation;

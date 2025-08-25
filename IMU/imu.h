@@ -43,12 +43,12 @@ class IMU {
 
 		Angles _gyroAngleEstimation;
 
-		MovingAverage<11> _accAvgX;
-		MovingAverage<11> _accAvgY;
-		MovingAverage<11> _accAvgZ;
+		static constexpr uint _AVERAGE_SAMPLE = 11;
+		MovingAverage<_AVERAGE_SAMPLE> _accAvgX;
+		MovingAverage<_AVERAGE_SAMPLE> _accAvgY;
+		MovingAverage<_AVERAGE_SAMPLE> _accAvgZ;
 
 		static constexpr double _PI = 3.141592653589793;
-		double _toRadians(double degrees) { return degrees * (_PI / 180.0); }
 		double _toDegrees(double radians) { return radians * (180.0 / _PI); }
 
 		int16_t _combineBytes(uint8_t lsb, uint8_t msb) const { return (int16_t(msb) << 8) | lsb; }
