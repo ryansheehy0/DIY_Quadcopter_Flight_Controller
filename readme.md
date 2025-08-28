@@ -39,11 +39,16 @@ Raspberry Pi Pico code for a DIY flight controller for a quadcopter.
 - Other possible features
 	- Way to boost and change frequency other than 2.4GHz.
 
-## Compile and flash to raspberry pi pico
-- Sources
-	- https://github.com/tttapa/pico-cpp/tree/main
-	- https://www.raspberrypi.com/documentation/pico-sdk/hardware.html
+## Sources
+- [Pico Documentation](https://www.raspberrypi.com/documentation/pico-sdk/hardware.html)
+- [BMI160 Datasheet](https://www.bosch-sensortec.com/products/motion-sensors/imus/bmi160/)
+- [How PWM works on the pico](https://forums.raspberrypi.com/viewtopic.php?t=309632)
+- [Overview video](https://youtu.be/CHSYgLfhwUo?si=-crvyPy1awxu9ZyM)
+- [Accelerometer video](https://youtu.be/7VW_XVbtu9k?si=ISFqyUkHYZV7qJ2G)
+- [Simple flight controller video](https://youtu.be/4vpgjjYizVU?si=5Lh_3cyaq6MKLBy_)
+- [How to compile for pico](https://github.com/tttapa/pico-cpp/tree/main)
 
+## Compile and flash to raspberry pi pico
 1. Install dev tools
 
 ```sh
