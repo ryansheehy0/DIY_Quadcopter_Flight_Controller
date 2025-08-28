@@ -7,7 +7,8 @@ double PID::compute(uint64_t deltaTime, double measuredValue, double setPoint) {
 
 	// Get each term
 	double proportional = _gains.p * error;
-	_integral += _gains.i * error * deltaTime;
+	_integral += _gains.i * error * deltaTime; // Rectangle integral
+	//_integral += _gains.i * (_prevError + error) * 0.5 * deltaTime; // Trapezoidal integral
 	double derivative = _gains.d * ((error - _prevError) / deltaTime);
 	_prevError = error;
 

@@ -1,50 +1,43 @@
 # DIY Quadcopter Flight Controller
+Raspberry Pi Pico code for a DIY flight controller for a quadcopter.
 
-## Tests
-- Test timer on pico
-- Test gyro and acc data
-- Test controller inputs
-- Test motor output
+<!-- Image and video of drone -->
+<!-- Image of code diagram -->
 
 ## Future features
-1. Safety checks
-2. Median filter of acc. Linked list on stack that goes through and inserts and keeps going until you find the middle.
-3. Disable motors from controller
-4. Sound after init
-5. Send back battery voltage/percentage with transmitter
-6. FPV Camera
-7. Combine cheap thermal camera with regular camera.
-	- Pot to change opacity.
-	- Use Open CV
-8. Flight computer
-	- Sends camera feed with different objects detected
-	- User selects the object they want to track
-	- The drone follows object, keeping its distance(estimate size of object)
-9. Changing frequencies for controller and boosting signal strength.
-	- Frequency hopping
+1. FPV drone
+	1. Safety checks
+	1. Stabilized mode
+	1. Send back battery voltage
+	1. FPV camera
+	1. Pico 2
+	1. Advanced stabilized algos
+		- Acc Averaging -> Butterworth filter
+		- Complimentary filter -> Madgwick filter
 
-- Left pot - Change opacity between regular and thermal camera.
-	- Left pot could also change the threshold for temps that are gotten, only displaying hot spots.
-- Right pot - Select the object you want to track.
-	- It can also track using the heat source from the thermal camera.
-	- Use switch to select the one you want to track.
-		- Switch down means tracking and switch up means not tracking.
+2. Partially autonomous
+	1. Arm/disarm
+	1. Altitude hold
+	1. Flight controller to track objects
+	1. Thermal camera with opacity filter
 
-- Switches
-	- Left
-		- Arm/disarm
-		- Altitude hold or not
-	- Right
-		- Don't track object, track object from far away, track object from close(crash into object).
-		- Release/activate payload or not
-			- Drop something
-			- Produce sound
-			- Produce lights, etc.
+| Controls            | Description                                                        |
+|---------------------|--------------------------------------------------------------------|
+| Left pot            | Change opacity of thermal camera.                                  |
+| Right pot           | Select between object for AI to track. When moved, it activates.   |
+| Outer left switch   | Arm/disarm                                                         |
+| Center left switch  | Altitude hold                                                      |
+| Center right switch | Don't track object, track object from far away, track object close |
+| Outer right switch  | Activate payload(drop, speaker, lights, etc)                       |
 
-Other
-- PID tuning test stand
-- Prop guards
-- Pico 2
+3. Fully autonomous
+	- Give general location from UI
+	- It knows its location from dead reckoning and from recognizing the terrain.
+	- It searches for objects to track.
+	- When it's low battery, it makes its way back home.
+
+- Other possible features
+	- Way to boost and change frequency other than 2.4GHz.
 
 ## Compile and flash to raspberry pi pico
 - Sources
@@ -102,8 +95,6 @@ pico_add_extra_outputs(hello)
 cmake -S . -B build
 cmake --build build -j$(nproc)
 ```
-
-<!-- --toolchain ~/opt/x-tools/arm-pico-eabi/arm-pico-eabi.toolchain.cmake -->
 
 6. Plug in Pico while pressing the program button. The copy and past the compiled UF2 file into the Pico's drive.
 

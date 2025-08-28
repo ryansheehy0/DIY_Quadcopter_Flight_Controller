@@ -1,11 +1,14 @@
 #include "controller.h"
 
 // Constructor -----------------------------------------------------------------
-Controller::Controller() {
+Controller::Controller(RotationRates maxRotationRates, Angles maxAngles) {
+	_maxRotationRates = maxRotationRates;
+	_maxAngles = maxAngles;
 	// Init UART
 	uart_init(_UART, _BAUD_RATE);
 	gpio_set_function(_RX_PIN, GPIO_FUNC_UART);
-}
+};
+
 
 // Public ----------------------------------------------------------------------
 StickValues Controller::getStickValues() {
@@ -38,12 +41,25 @@ StickValues Controller::getStickValues() {
 
 	// Convert channels to StickValues. Mode 2
 	StickValues newStickValues;
-	newStickValues.roll = channels[0] - 1500; // Right stick left/right
-	newStickValues.pitch = channels[1] - 1500; // Right stick up/down
-	newStickValues.throttle = channels[2]; // Left stick up/down
-	newStickValues.yaw = channels[3] - 1500; // Left stick left/down
+	double rawRoll = (int(channels[0]) - 1500) / 500.0; // Right stick left/right
+	double rawPitch = (int(channels[1]) - 1500) / 500.0; // Right stick up/down
+	// Limit throttle to prevent saturation of motors
+	newStickValues.throttle = (channels[2] > 1800) ? 1800 : channels[2]; // Left stick up/down
+	double rawYaw = (int(channels[3]) - 1500) / 500.0; // Left stick left/down
 	newStickValues.leftPot = channels[4] - 1000;
 	newStickValues.rightPot = channels[5] - 1000;
+	switch (_MODE) {
+		case ControllerMode::ACRO:
+			newStickValues.pitch = rawPitch * _maxRotationRates.pitch;
+			newStickValues.roll = rawRoll * _maxRotationRates.roll;
+			newStickValues.yaw = rawYaw * _maxRotationRates.yaw;
+			break;
+		case ControllerMode::STABILIZED:
+			newStickValues.pitch = rawPitch * _maxAngles.pitch;
+			newStickValues.roll = rawRoll * _maxAngles.roll;
+			newStickValues.yaw = rawYaw * _maxRotationRates.yaw;
+			break;
+	}
 
 	// Return
 	_prevStickValues = newStickValues;

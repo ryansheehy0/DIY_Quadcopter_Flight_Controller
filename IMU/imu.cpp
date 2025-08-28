@@ -12,6 +12,8 @@ IMU::IMU() {
 	constexpr uint8_t CMD_ADDR = 0x7E;
 	constexpr uint8_t GYRO_NORMAL_MODE = 0x15;
 	constexpr uint8_t ACC_NORMAL_MODE = 0x11;
+	constexpr uint8_t GYRO_RANGE = 0x43;
+	constexpr uint8_t GYRO_RANGE_500_DEG_PER_SEC = 0x02;
 	constexpr uint8_t ACC_RANGE = 0x41;
 	constexpr uint8_t ACC_RANGE_8G = 0x08;
 
@@ -33,6 +35,11 @@ IMU::IMU() {
 	// Set Acc to normal mode
 	uint8_t accCmd[2] = {CMD_ADDR, ACC_NORMAL_MODE};
 	i2c_write_blocking(_I2C, _BMI160_ADDR, accCmd, 2, false);
+	sleep_ms(500);
+
+	// Set Gyro range to +/- 500 degrees per sec
+	uint8_t gyroRangeCmd[2] = {GYRO_RANGE, GYRO_RANGE_500_DEG_PER_SEC};
+	i2c_write_blocking(_I2C, _BMI160_ADDR, gyroRangeCmd, 2, false);
 	sleep_ms(500);
 
 	// Set Acc range to +/- 8g
@@ -80,7 +87,7 @@ RawData IMU::_getRawData(uint8_t reg) const {
 RotationRates IMU::_gyro() {
 	// Gyro consts
 	constexpr uint8_t GYRO_ADDR = 0x0C;
-	constexpr double LSB_TO_DEG_PER_SEC = 16.4; // 1 gyro LSB = 1/16.4 degrees/sec
+	constexpr double LSB_TO_DEG_PER_SEC = 65.6; // 1 gyro LSB = 1/65.6 degrees/sec
 
 	// Get raw data
 	RawData gyroRawData = _getRawData(GYRO_ADDR);
