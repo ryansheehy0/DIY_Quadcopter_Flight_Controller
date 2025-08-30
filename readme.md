@@ -7,10 +7,13 @@ Raspberry Pi Pico code for a DIY flight controller for a quadcopter.
 ## Future features
 1. FPV drone
 	1. Safety checks
+		- LEDs on init and stick down.
+		- Signal loss then hover.
 	1. Stabilized mode
 	1. Send back battery voltage
 	1. FPV camera
-	1. Pico 2
+	1. Upgrade to Pico 2 and put sending back battery voltage on a different thread
+		- Maybe put safety checks on a different thread
 	1. Advanced stabilized algos
 		- Acc Averaging -> Butterworth filter
 		- Complimentary filter -> Madgwick filter
@@ -20,6 +23,9 @@ Raspberry Pi Pico code for a DIY flight controller for a quadcopter.
 	1. Altitude hold
 	1. Flight controller to track objects
 	1. Thermal camera with opacity filter
+	1. Speaker and microphone
+		- Filter out drone hum?
+		- Separate thread
 
 | Controls            | Description                                                        |
 |---------------------|--------------------------------------------------------------------|

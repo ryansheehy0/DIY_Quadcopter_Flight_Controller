@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cstddef> // size_t
+#include <cstddef>
 #include "pico/stdlib.h"
 #include "hardware/i2c.h"
 #include "moving_average.h"

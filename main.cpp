@@ -1,13 +1,10 @@
+#include <stdio.h>
 #include "IMU/imu.h"
 #include "controller.h"
 #include "motor.h"
 #include "pid.h"
 #include "pico/stdlib.h"
-#include <stdio.h>
 #include "normalize_sensor.h"
-
-// ToDo:
-	// Add upper 2000 limit to motors and lower 1000 for motors
 
 int main() {
 	stdio_init_all();
