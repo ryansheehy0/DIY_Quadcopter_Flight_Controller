@@ -90,10 +90,12 @@ pico_sdk_init()
 add_library(warnings INTERFACE)
 target_compile_options(warnings INTERFACE "-Wall" "-Wextra" "-Wno-psabi")
 
-add_executable(hello "hello.cpp")
+add_executable(hello
+	hello.cpp
+)
 target_compile_features(hello PRIVATE cxx_std_20)
 target_link_libraries(hello PRIVATE warnings pico_stdlib hardware_adc)
-# Add other libraries: hardware_spi
+# Add other libraries: hardware_i2c
 
 pico_enable_stdio_usb(hello 1)
 pico_enable_stdio_uart(hello 0)

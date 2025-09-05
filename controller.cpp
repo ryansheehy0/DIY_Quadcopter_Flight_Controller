@@ -9,7 +9,6 @@ Controller::Controller(RotationRates maxRotationRates, Angles maxAngles) {
 	gpio_set_function(_RX_PIN, GPIO_FUNC_UART);
 };
 
-
 // Public ----------------------------------------------------------------------
 StickValues Controller::getStickValues() {
 	if (!uart_is_readable(_UART)) return _prevStickValues;
@@ -44,7 +43,8 @@ StickValues Controller::getStickValues() {
 	double rawRoll = (int(channels[0]) - 1500) / 500.0; // Right stick left/right
 	double rawPitch = (int(channels[1]) - 1500) / 500.0; // Right stick up/down
 	// Limit throttle to prevent saturation of motors
-	newStickValues.throttle = (channels[2] > 1800) ? 1800 : channels[2]; // Left stick up/down
+	//newStickValues.throttle = (channels[2] > 1800) ? 1800 : channels[2]; // Left stick up/down
+	newStickValues.throttle = channels[2]; // Left stick up/down
 	double rawYaw = (int(channels[3]) - 1500) / 500.0; // Left stick left/down
 	newStickValues.leftPot = channels[4] - 1000;
 	newStickValues.rightPot = channels[5] - 1000;

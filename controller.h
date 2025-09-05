@@ -4,7 +4,7 @@
 #include "IMU/imu.h"
 
 struct StickValues {
-	uint16_t throttle = 1500; // 1000 to 2000(PWM microseconds)
+	uint16_t throttle = 1000; // 1000 to 2000(PWM microseconds)
 	// Acro(Degrees per second) or Stabilized(Degrees)
 	double pitch = 0;
 	double roll = 0;
@@ -22,7 +22,7 @@ class Controller {
 		// UART consts
 		static constexpr uint _RX_PIN = 1;
 		static constexpr uint _BAUD_RATE = 115'200;
-		static constexpr uart_inst_t* _UART = uart0;
+		uart_inst_t* _UART = uart0;
 
 		StickValues _prevStickValues;
 		RotationRates _maxRotationRates;

@@ -25,10 +25,10 @@ class Motor {
 		uint _channel;
 
 		// Constants
-		static constexpr uint32_t _CLOCK_FEQ = 125'000'000; // Hz
+		static constexpr uint32_t _CLOCK_FREQ = 125'000'000; // Hz
 		static constexpr double _PWM_PERIOD = 0.02; // Sec
 		static constexpr uint16_t _WRAP = 0xFFFF; // 2^16(Max wrap) - Gives the most resolution.
-		static constexpr double _CLOCK_DIV = (_PWM_PERIOD * _CLOCK_FEQ) / double(_WRAP + 1);
+		static constexpr double _CLOCK_DIV = (_PWM_PERIOD * _CLOCK_FREQ) / double(_WRAP + 1);
 
 	public:
 		Motor(uint pwmPin);
