@@ -10,12 +10,17 @@ target_compile_options(warnings INTERFACE "-Wall" "-Wextra" "-Wno-psabi")
 
 add_executable(main
 	main.cpp
+	controller.h
+	controller.cpp
 	imu.cpp
-	moving_average.h
 	imu.h
+	motor.cpp
+	motor.h
+	pid.cpp
+	pid.h
 )
 target_compile_features(main PRIVATE cxx_std_20)
-target_link_libraries(main PRIVATE warnings pico_stdlib hardware_adc hardware_i2c)
+target_link_libraries(main PRIVATE warnings pico_stdlib hardware_adc hardware_i2c hardware_uart hardware_pwm)
 
 pico_enable_stdio_usb(main 1)
 pico_enable_stdio_uart(main 0)

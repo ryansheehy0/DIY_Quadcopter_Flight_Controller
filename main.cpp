@@ -1,10 +1,10 @@
 #include <stdio.h>
-#include "IMU/imu.h"
+#include "pico/stdlib.h"
+
+#include "imu.h"
 #include "controller.h"
 #include "motor.h"
 #include "pid.h"
-#include "pico/stdlib.h"
-#include "normalize_sensor.h"
 
 int main() {
 	stdio_init_all();

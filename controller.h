@@ -1,7 +1,7 @@
 #pragma once
 
 #include "hardware/uart.h"
-#include "IMU/imu.h"
+#include "imu.h"
 
 struct StickValues {
 	uint16_t throttle = 1000; // 1000 to 2000(PWM microseconds)
