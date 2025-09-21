@@ -17,12 +17,12 @@ enum class ControllerMode { ACRO, STABILIZED };
 
 class Controller {
 	private:
-		ControllerMode _MODE = ControllerMode::ACRO;
+		ControllerMode _mode = ControllerMode::ACRO;
 
 		// UART consts
 		static constexpr uint _RX_PIN = 1;
 		static constexpr uint _BAUD_RATE = 115'200;
-		uart_inst_t* _UART = uart0;
+		uart_inst_t* _uart = uart0;
 
 		StickValues _prevStickValues;
 		RotationRates _maxRotationRates;

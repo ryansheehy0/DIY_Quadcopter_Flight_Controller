@@ -14,7 +14,7 @@ Raspberry Pi Pico code for a DIY flight controller for a quadcopter.
 	1. FPV camera
 	1. Upgrade to Pico 2 and put sending back battery voltage on a different thread
 		- Maybe put safety checks on a different thread
-	1. Advanced stabilized algos
+	1. (Future)Advanced stabilized algos
 		- Acc Averaging -> Butterworth filter
 		- Complimentary filter -> Madgwick filter
 

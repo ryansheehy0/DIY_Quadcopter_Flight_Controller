@@ -5,23 +5,23 @@ Controller::Controller(RotationRates maxRotationRates, Angles maxAngles) {
 	_maxRotationRates = maxRotationRates;
 	_maxAngles = maxAngles;
 	// Init UART
-	uart_init(_UART, _BAUD_RATE);
+	uart_init(_uart, _BAUD_RATE);
 	gpio_set_function(_RX_PIN, GPIO_FUNC_UART);
 };
 
 // Public ----------------------------------------------------------------------
 StickValues Controller::getStickValues() {
-	if (!uart_is_readable(_UART)) return _prevStickValues;
+	if (!uart_is_readable(_uart)) return _prevStickValues;
 
 	// Check for start
-	uint8_t startByte = uart_getc(_UART);
+	uint8_t startByte = uart_getc(_uart);
 	if (startByte != 0x20) return _prevStickValues;
 
 	// Load buffer
 	uint8_t buffer[31];
 	for (int i = 0; i < 31; i++) {
-		while (!uart_is_readable(_UART));
-		buffer[i] = uart_getc(_UART);
+		while (!uart_is_readable(_uart));
+		buffer[i] = uart_getc(_uart);
 	}
 
 	// Validate checksum
@@ -38,17 +38,20 @@ StickValues Controller::getStickValues() {
 		channels[i] =  _combineBytes(buffer[(i*2) + 1], buffer[(i*2) + 2]);
 	}
 
-	// Convert channels to StickValues. Mode 2
+	// Convert channels to StickValues
+		// Mode 2
+			// Throttle - Left stick up/down
+			// Yaw - Left stick left/right
+			// Pitch - Right stick up/down
+			// Roll - Right stick left/right
 	StickValues newStickValues;
-	double rawRoll = (int(channels[0]) - 1500) / 500.0; // Right stick left/right
-	double rawPitch = (int(channels[1]) - 1500) / 500.0; // Right stick up/down
-	// Limit throttle to prevent saturation of motors
-	//newStickValues.throttle = (channels[2] > 1800) ? 1800 : channels[2]; // Left stick up/down
-	newStickValues.throttle = channels[2]; // Left stick up/down
-	double rawYaw = (int(channels[3]) - 1500) / 500.0; // Left stick left/down
+	double rawRoll = (int(channels[0]) - 1500) / 500.0;
+	double rawPitch = (int(channels[1]) - 1500) / 500.0;
+	newStickValues.throttle = (channels[2] > 1800) ? 1800 : channels[2]; // Limit to 1800
+	double rawYaw = (int(channels[3]) - 1500) / 500.0;
 	newStickValues.leftPot = channels[4] - 1000;
 	newStickValues.rightPot = channels[5] - 1000;
-	switch (_MODE) {
+	switch (_mode) {
 		case ControllerMode::ACRO:
 			newStickValues.pitch = rawPitch * _maxRotationRates.pitch;
 			newStickValues.roll = rawRoll * _maxRotationRates.roll;
