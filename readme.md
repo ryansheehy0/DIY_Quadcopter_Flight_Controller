@@ -5,46 +5,32 @@ Raspberry Pi Pico code for a DIY flight controller for a quadcopter.
 <!-- Image of code diagram -->
 
 ## Future features
-1. Basic Drone
+1. Basic FPV Drone
 	1. Safety checks
 		- LEDs on init and stick down.
 		- Signal loss then hover.
 	1. Stabilized mode
-
-2. FPV drone
 	1. FPV camera
+
+2. Advanced FPV drone
 	1. Upgrade to Pico 2
 		- Send back battery voltage on a different thread(INA219).
 	1. Advanced stabilized algos
 		- Acc Averaging -> Butterworth filter
 		- Complimentary filter -> Madgwick filter
+	1. Thermal camera with opacity filter from left pot.
 
 3. Partially autonomous
-	1. Arm/disarm
-	1. Altitude hold
-	1. Flight controller to track objects
-	1. Thermal camera with opacity filter
-	1. Speaker and microphone
-		- Filter out drone hum?
-		- Separate thread
-
-| Controls            | Description                                                        |
-|---------------------|--------------------------------------------------------------------|
-| Left pot            | Change opacity of thermal camera.                                  |
-| Right pot           | Select between object for AI to track. When moved, it activates.   |
-| Outer left switch   | Arm/disarm                                                         |
-| Center left switch  | Altitude hold                                                      |
-| Center right switch | Don't track object, track object from far away, track object close |
-| Outer right switch  | Activate payload(drop, speaker, lights, etc)                       |
+	- Right pot selects the object to track with a rectangle around the object.
+		- When set to 0 it doesn't show rectangles and doesn't track.
+		- When you twist the right pot, it shows all the rectangles and highlights the one that's being currently tracked.
+		- You have to wait a little before it starts tracking.
 
 4. Fully autonomous
 	- Give general location from UI
 	- It knows its location from dead reckoning and from recognizing the terrain.
 	- It searches for objects to track.
 	- When it's low battery, it makes its way back home.
-
-- Other possible features
-	- Way to boost and change frequency other than 2.4GHz.
 
 ## Sources
 - [Pico Documentation](https://www.raspberrypi.com/documentation/pico-sdk/hardware.html)
