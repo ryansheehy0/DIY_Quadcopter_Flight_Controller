@@ -14,10 +14,14 @@ Raspberry Pi Pico code for a DIY flight controller for a quadcopter.
 
 2. Advanced FPV drone
 	1. Upgrade to Pico 2
-		- Send back battery voltage on a different thread(INA219).
+	1. Send back battery voltage on a different thread(INA219).
 	1. Advanced stabilized algos
 		- Acc Averaging -> Butterworth filter
 		- Complimentary filter -> Madgwick filter
+	1. Custom PCB
+		- Mount in center with battery up top to allow for larger batteries.
+		- Buy new frame.
+	1. Better FPV camera
 	1. Thermal camera with opacity filter from left pot.
 
 3. Partially autonomous
