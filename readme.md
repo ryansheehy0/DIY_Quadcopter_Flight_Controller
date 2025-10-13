@@ -10,19 +10,22 @@ Raspberry Pi Pico code for a DIY flight controller for a quadcopter.
 		- LEDs on init and stick down.
 		- Signal loss then hover.
 	1. Stabilized mode
-	1. FPV camera
+	1. Basic FPV camera
 
-2. Advanced FPV drone
-	1. Upgrade to Pico 2
-	1. Send back battery voltage on a different thread(INA219).
+2. Advanced FPV Drone
+	1. Send back battery voltage on a different thread.
+		- INA219
+		- Upgrade to Pico 2
+	1. Switch between regular FPV camera and thermal one.
+		- Get switch from controller
+		- Better FPV camera that uses a video transmitter.
+		- A custom IC that switches between the analog signals.
+	1. Custom PCB mounted on top and larger battery mounted in the center.
+		- Buy new frame.
+		- Maybe water proof PCB
 	1. Advanced stabilized algos
 		- Acc Averaging -> Butterworth filter
 		- Complimentary filter -> Madgwick filter
-	1. Custom PCB
-		- Mount in center with battery up top to allow for larger batteries.
-		- Buy new frame.
-	1. Better FPV camera
-	1. Thermal camera with opacity filter from left pot.
 
 3. Partially autonomous
 	- Right pot selects the object to track with a rectangle around the object.
