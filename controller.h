@@ -20,9 +20,8 @@ class Controller {
 		ControllerMode _mode = ControllerMode::ACRO;
 
 		// UART consts
-		static constexpr uint _RX_PIN = 1;
 		static constexpr uint _BAUD_RATE = 115'200;
-		uart_inst_t* _uart = uart0;
+		uart_inst_t* _uart;
 
 		StickValues _prevStickValues;
 		RotationRates _maxRotationRates;
@@ -32,6 +31,7 @@ class Controller {
 
 	public:
 		Controller(
+			uint rxPin,
 			RotationRates maxRotationRates = {.pitch = 75, .roll = 75, .yaw = 75},
 			Angles maxAngles = {.pitch = 35, .roll = 35}
 		);

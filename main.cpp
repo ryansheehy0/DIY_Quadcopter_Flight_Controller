@@ -10,12 +10,21 @@ int main() {
 	stdio_init_all();
 
 	// Hardware objects
-	IMU imu;
-	Controller controller;
-	Motor frontLeftMotor;
-	Motor frontRightMotor;
-	Motor backLeftMotor;
-	Motor backRightMotor;
+	constexpr uint IMU_SDA_PIN = 16;
+	constexpr uint IMU_SCL_PIN = 17;
+	IMU imu(IMU_SDA_PIN, IMU_SCL_PIN);
+
+	constexpr uint CONTROLLER_RX_PIN = 1;
+	Controller controller(CONTROLLER_RX_PIN);
+
+	constexpr uint FRONT_LEFT_PWM_PIN = 7;
+	Motor frontLeftMotor(FRONT_LEFT_PWM_PIN);
+	constexpr uint FRONT_RIGHT_PWM_PIN = 26;
+	Motor frontRightMotor(FRONT_RIGHT_PWM_PIN);
+	constexpr uint BACK_LEFT_PWM_PIN = 11;
+	Motor backLeftMotor(BACK_LEFT_PWM_PIN);
+	constexpr uint BACK_RIGHT_PWM_PIN = 20;
+	Motor backRightMotor(BACK_RIGHT_PWM_PIN);
 
 	// PID constants
 	const PIDValues PITCH_GAINS = {.p = 1.0, .i = 0.02, .d = 20.0};

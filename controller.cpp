@@ -2,11 +2,30 @@
 
 // Constructor -----------------------------------------------------------------
 Controller::Controller(RotationRates maxRotationRates, Angles maxAngles) {
+	switch(rxPin) {
+		case 0:
+		case 1:
+		case 12:
+		case 13:
+		case 17:
+		case 16:
+			_uart = uart0;
+			break;
+		case 4:
+		case 5:
+		case 8:
+		case 9:
+			_uart = uart1;
+			break;
+		default:
+			throw "Non-valid controller rx pin.\n";
+	}
+
 	_maxRotationRates = maxRotationRates;
 	_maxAngles = maxAngles;
 	// Init UART
 	uart_init(_uart, _BAUD_RATE);
-	gpio_set_function(_RX_PIN, GPIO_FUNC_UART);
+	gpio_set_function(rxPin, GPIO_FUNC_UART);
 };
 
 // Public ----------------------------------------------------------------------

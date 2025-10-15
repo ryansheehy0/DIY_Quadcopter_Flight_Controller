@@ -2,11 +2,49 @@
 #include <cmath> // atan, hypot
 
 // Constructor -----------------------------------------------------------------
-IMU::IMU() {
-	// I2C consts
-	constexpr uint SCL_PIN = 17;
-	constexpr uint SDA_PIN = 16;
-	constexpr uint BAUD_RATE = 400'000;
+IMU::IMU(uint sdaPin, uint sclPin) {
+	// Find which i2c port
+	switch(sdaPin) {
+		case 0:
+		case 4:
+		case 8:
+		case 12:
+		case 16:
+		case 20:
+			_i2c = i2c0;
+			break;
+		case 2:
+		case 6:
+		case 10:
+		case 14:
+		case 18:
+		case 26:
+			_i2c = i2c1;
+			break;
+		default:
+			throw "Non-valid IMU sda pin.\n";
+	}
+	// Check that the other pin is correct
+	switch(sclPin) {
+		case 1:
+		case 5:
+		case 9:
+		case 13:
+		case 17:
+		case 21:
+			if (_i2c != i2c0) throw "IMU pins do not match i2c port.\n";
+			break;
+		case 3:
+		case 7:
+		case 11:
+		case 15:
+		case 19:
+		case 27:
+			if (_i2c != i2c1) throw "IMU pins do not match i2c port.\n";
+			break;
+		default:
+			throw "Non-valid IMU scl pin.\n";
+	}
 
 	// Addresses
 	constexpr uint8_t CMD_ADDR = 0x7E;
@@ -21,30 +59,30 @@ IMU::IMU() {
 	constexpr int CALIBRATION_SAMPLES = 2000;
 
 	// Init I2C
-	i2c_init(_I2C, BAUD_RATE);
-	gpio_set_function(SCL_PIN, GPIO_FUNC_I2C);
-	gpio_set_function(SDA_PIN, GPIO_FUNC_I2C);
-	gpio_pull_up(SCL_PIN);
-	gpio_pull_up(SDA_PIN);
+	i2c_init(_i2c, BAUD_RATE);
+	gpio_set_function(sclPin, GPIO_FUNC_I2C);
+	gpio_set_function(sdaPin, GPIO_FUNC_I2C);
+	gpio_pull_up(sclPin);
+	gpio_pull_up(sdaPin);
 
 	// Set Gyro to normal mode
 	uint8_t gyroCmd[2] = {CMD_ADDR, GYRO_NORMAL_MODE};
-	i2c_write_blocking(_I2C, _BMI160_ADDR, gyroCmd, 2, false);
+	i2c_write_blocking(i2c, _BMI160_ADDR, gyroCmd, 2, false);
 	sleep_ms(500);
 
 	// Set Acc to normal mode
 	uint8_t accCmd[2] = {CMD_ADDR, ACC_NORMAL_MODE};
-	i2c_write_blocking(_I2C, _BMI160_ADDR, accCmd, 2, false);
+	i2c_write_blocking(i2c, _BMI160_ADDR, accCmd, 2, false);
 	sleep_ms(500);
 
 	// Set Gyro range to +/- 500 degrees per sec
 	uint8_t gyroRangeCmd[2] = {GYRO_RANGE, GYRO_RANGE_500_DEG_PER_SEC};
-	i2c_write_blocking(_I2C, _BMI160_ADDR, gyroRangeCmd, 2, false);
+	i2c_write_blocking(_i2c, _BMI160_ADDR, gyroRangeCmd, 2, false);
 	sleep_ms(500);
 
 	// Set Acc range to +/- 8g
 	uint8_t accRangeCmd[2] = {ACC_RANGE, ACC_RANGE_8G};
-	i2c_write_blocking(_I2C, _BMI160_ADDR, accRangeCmd, 2, false);
+	i2c_write_blocking(_i2c, _BMI160_ADDR, accRangeCmd, 2, false);
 	sleep_ms(500);
 
 	// Calibrate gyroscope
@@ -76,8 +114,8 @@ IMU::IMU() {
 RawData IMU::_getRawData(uint8_t reg) const {
 	RawData rawData;
 	uint8_t buffer[6];
-	i2c_write_blocking(_I2C, _BMI160_ADDR, &reg, 1, true);
-	i2c_read_blocking(_I2C, _BMI160_ADDR, buffer, 6, false);
+	i2c_write_blocking(_i2c, _BMI160_ADDR, &reg, 1, true);
+	i2c_read_blocking(_i2c, _BMI160_ADDR, buffer, 6, false);
 	rawData.data1 = _combineBytes(buffer[0], buffer[1]);
 	rawData.data2 = _combineBytes(buffer[2], buffer[3]);
 	rawData.data3 = _combineBytes(buffer[4], buffer[5]);

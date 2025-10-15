@@ -34,8 +34,9 @@ struct RawData {
 class IMU {
 	private:
 		// I2C consts
-		static constexpr uint8_t _BMI160_ADDR = 0x68; // Connect BMI160's SAO to GND
-		static constexpr i2c_inst_t* _I2C = i2c0;
+		static constexpr uint8_t _BMI160_ADDR = 0x68;
+		static constexpr uint BAUD_RATE = 400'000;
+		i2c_inst_t* _i2c;
 
 		// Offsets subtracted from sensor data.
 		RotationRates _gyroOffset;
@@ -59,7 +60,8 @@ class IMU {
 		Gravity _acc();
 
 	public:
-		IMU();
+		// Connect BMI160's SAO to GND
+		IMU(uint sdaPin, uint sclPin);
 
 		RotationRates getRotationRates();
 		Angles getAngles(double deltaTime);
