@@ -5,6 +5,7 @@
 #include "controller.h"
 #include "motor.h"
 #include "pid.h"
+#include "led.h"
 
 int main() {
 	stdio_init_all();
@@ -25,6 +26,8 @@ int main() {
 	Motor backLeftMotor(BACK_LEFT_PWM_PIN);
 	constexpr uint BACK_RIGHT_PWM_PIN = 20;
 	Motor backRightMotor(BACK_RIGHT_PWM_PIN);
+
+	LED led;
 
 	// PID constants
 	const PIDValues PITCH_GAINS = {.p = 1.0, .i = 0.02, .d = 20.0};
@@ -48,9 +51,26 @@ int main() {
 	uint64_t prevTime = time_us_64();
 	double deltaTime = 0;
 
-	// Show led
-	// Wait to move stick all the way down in order to start(safety)
-	// Turn led off
+	led.on();
+	// Wait until near full throttle, then near 0 throttle.
+	while (true) {
+		if (controller.getStickValues().throttle > 1950) break;
+		sleep_ms(100);
+	}
+	led.off();
+	sleep_ms(300);
+	led.on();
+	while (true) {
+		if (controller.getStickValues().throttle < 1050) break;
+		sleep_ms(100);
+	}
+	led.off();
+
+	// Enable motors
+	frontLeftMotor.enable();
+	frontRightMotor.enable();
+	backLeftMotor.enable();
+	backRightMotor.enable();
 
 	while (true) {
 		// Get delta time

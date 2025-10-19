@@ -1,7 +1,7 @@
 #include "controller.h"
 
 // Constructor -----------------------------------------------------------------
-Controller::Controller(RotationRates maxRotationRates, Angles maxAngles) {
+Controller::Controller(uint rxPin, RotationRates maxRotationRates, Angles maxAngles) {
 	switch(rxPin) {
 		case 0:
 		case 1:
@@ -18,7 +18,8 @@ Controller::Controller(RotationRates maxRotationRates, Angles maxAngles) {
 			_uart = uart1;
 			break;
 		default:
-			throw "Non-valid controller rx pin.\n";
+			//throw "Non-valid controller rx pin.\n";
+			return;
 	}
 
 	_maxRotationRates = maxRotationRates;

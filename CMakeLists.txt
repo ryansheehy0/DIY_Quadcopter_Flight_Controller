@@ -16,8 +16,11 @@ add_executable(main
 	imu.h
 	motor.cpp
 	motor.h
+	moving_average.h
 	pid.cpp
 	pid.h
+	led.cpp
+	led.h
 )
 target_compile_features(main PRIVATE cxx_std_20)
 target_link_libraries(main PRIVATE warnings pico_stdlib hardware_adc hardware_i2c hardware_uart hardware_pwm)

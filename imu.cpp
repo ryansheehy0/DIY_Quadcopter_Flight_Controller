@@ -22,7 +22,8 @@ IMU::IMU(uint sdaPin, uint sclPin) {
 			_i2c = i2c1;
 			break;
 		default:
-			throw "Non-valid IMU sda pin.\n";
+			//throw "Non-valid IMU sda pin.\n";
+			return;
 	}
 	// Check that the other pin is correct
 	switch(sclPin) {
@@ -32,7 +33,7 @@ IMU::IMU(uint sdaPin, uint sclPin) {
 		case 13:
 		case 17:
 		case 21:
-			if (_i2c != i2c0) throw "IMU pins do not match i2c port.\n";
+			if (_i2c != i2c0) return; //throw "IMU pins do not match i2c port.\n";
 			break;
 		case 3:
 		case 7:
@@ -40,10 +41,11 @@ IMU::IMU(uint sdaPin, uint sclPin) {
 		case 15:
 		case 19:
 		case 27:
-			if (_i2c != i2c1) throw "IMU pins do not match i2c port.\n";
+			if (_i2c != i2c1) return; //throw "IMU pins do not match i2c port.\n";
 			break;
 		default:
-			throw "Non-valid IMU scl pin.\n";
+			//throw "Non-valid IMU scl pin.\n";
+			return;
 	}
 
 	// Addresses
@@ -67,12 +69,12 @@ IMU::IMU(uint sdaPin, uint sclPin) {
 
 	// Set Gyro to normal mode
 	uint8_t gyroCmd[2] = {CMD_ADDR, GYRO_NORMAL_MODE};
-	i2c_write_blocking(i2c, _BMI160_ADDR, gyroCmd, 2, false);
+	i2c_write_blocking(_i2c, _BMI160_ADDR, gyroCmd, 2, false);
 	sleep_ms(500);
 
 	// Set Acc to normal mode
 	uint8_t accCmd[2] = {CMD_ADDR, ACC_NORMAL_MODE};
-	i2c_write_blocking(i2c, _BMI160_ADDR, accCmd, 2, false);
+	i2c_write_blocking(_i2c, _BMI160_ADDR, accCmd, 2, false);
 	sleep_ms(500);
 
 	// Set Gyro range to +/- 500 degrees per sec
