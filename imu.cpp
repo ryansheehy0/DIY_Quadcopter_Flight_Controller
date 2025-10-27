@@ -151,8 +151,8 @@ Gravity IMU::_acc() {
 
 	// Convert raw data to gravity
 	Gravity accData;
-	accData.x = accRawData.data1 / LSB_TO_GRAVITY;
-	accData.y = accRawData.data2 / LSB_TO_GRAVITY;
+	accData.y = accRawData.data1 / LSB_TO_GRAVITY;
+	accData.x = accRawData.data2 / LSB_TO_GRAVITY;
 	accData.z = accRawData.data3 / LSB_TO_GRAVITY;
 
 	// Calculate and return average
@@ -183,6 +183,8 @@ Angles IMU::getAngles(double deltaTime) {
 	RotationRates curRotationRate = getRotationRates();
 	_gyroAngleEstimation.pitch += curRotationRate.pitch * deltaTime;
 	_gyroAngleEstimation.roll += curRotationRate.roll * deltaTime;
+
+	return _gyroAngleEstimation;
 
 	// Get acc angle estimation
 	Gravity curGravity = _acc();

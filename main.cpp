@@ -46,23 +46,24 @@ int main() {
 
 	// Variables
 	RotationRates curRotationRates;
-	//Angles curAngles;
+	Angles curAngles;
 	StickValues controllerValues;
 	uint64_t prevTime = time_us_64();
 	double deltaTime = 0;
 
+	/*
 	led.on();
 	// Wait until near full throttle, then near 0 throttle.
 	while (true) {
-		if (controller.getStickValues().throttle > 1950) break;
-		sleep_ms(100);
+		if (controller.getStickValues().throttle > 1750) break;
+		sleep_ms(10);
 	}
 	led.off();
-	sleep_ms(300);
+	sleep_ms(250);
 	led.on();
 	while (true) {
 		if (controller.getStickValues().throttle < 1050) break;
-		sleep_ms(100);
+		sleep_ms(10);
 	}
 	led.off();
 
@@ -71,15 +72,16 @@ int main() {
 	frontRightMotor.enable();
 	backLeftMotor.enable();
 	backRightMotor.enable();
+	*/
 
 	while (true) {
 		// Get delta time
-		deltaTime = (time_us_64() - prevTime) / 1'000'000; // Convert to seconds
+		deltaTime = (time_us_64() - prevTime) / 1'000'000.0; // Convert to seconds
 		prevTime = time_us_64();
 
 		// Get sensor and controller data
 		curRotationRates = imu.getRotationRates();
-		// curAngles = imu.getAngles(deltaTime);
+		curAngles = imu.getAngles(deltaTime);
 		controllerValues = controller.getStickValues();
 
 		// Calculate control axes
@@ -87,11 +89,25 @@ int main() {
 		double pitch = pitchPID.compute(deltaTime, curRotationRates.pitch, controllerValues.pitch) * PITCH_SCALE;
 		double roll = rollPID.compute(deltaTime, curRotationRates.roll, controllerValues.roll) * ROLL_SCALE;
 		double yaw = yawPID.compute(deltaTime, curRotationRates.yaw, controllerValues.yaw) * YAW_SCALE;
+		// Change roll, pitch, and yaw to +/- 500
+			// Controller range: -min angle to min angle
+			// IMU range: angle
+			// PID output range: 500 / min angle
+		printf("%.12f\n", curAngles.pitch);
+		// Pitch controller range: -75 to 75
 
 		// Set motor outputs
-		frontLeftMotor.setOutput(throttle - roll - pitch - yaw);
-		frontRightMotor.setOutput(throttle + roll + pitch - yaw);
-		backLeftMotor.setOutput(throttle - roll + pitch + yaw);
-		backRightMotor.setOutput(throttle + roll - pitch + yaw);
+		// frontLeftMotor.setOutput( throttle - roll - pitch - yaw);
+		// frontRightMotor.setOutput(throttle + roll - pitch + yaw);
+		// backLeftMotor.setOutput(  throttle - roll + pitch + yaw);
+		// backRightMotor.setOutput( throttle + roll + pitch - yaw);
+		/*
+
+
+
+
+		printf("Hello, pico.\n");
+		*/
+		//sleep_ms(10);
 	}
 }
