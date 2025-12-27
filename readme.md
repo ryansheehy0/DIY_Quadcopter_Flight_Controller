@@ -5,39 +5,40 @@ Raspberry Pi Pico code for a DIY flight controller for a quadcopter.
 <!-- Image of code diagram -->
 
 ## Future features
-1. Basic FPV Drone
-	1. Safety checks
-		- LEDs on init and stick down.
-		- Signal loss then hover.
-	1. Stabilized mode
-	1. Basic FPV camera
+1. Version 1: Basic Pi Pico Drone
+	- Signal loss then hover
+	- Stabilized mode
+	- Basic FPV camera
 
-2. Advanced FPV Drone
-	1. Send back battery voltage on a different thread.
-		- INA219
-		- Upgrade to Pico 2
-	1. Switch between regular FPV camera and thermal one.
-		- Get switch from controller
-		- Better FPV camera that uses a video transmitter.
-		- A custom IC that switches between the analog signals.
-	1. Custom PCB mounted on top and larger battery mounted in the center.
-		- Buy new frame.
+2. Version 2: STM32 blackpill Drone
+	- Switch to stm32 blackpill
+	- Custom PCB mounted on top with larger battery mounted in the center
 		- Maybe water proof PCB
-	1. Advanced stabilized algos
-		- Acc Averaging -> Butterworth filter
+	- Advanced stabilized algorithms
+		- Accelerometer Averaging -> Butterworth filter
 		- Complimentary filter -> Madgwick filter
+	- Show battery level and other info on fpv video signal
+			- INA219
 
-3. Partially autonomous
+3. Version 3: Thermal drone
+	- Switch between regular FPV camera and thermal one from left switch on controller.
+
+4. Version 4: Partially autonomous drone
 	- Right pot selects the object to track with a rectangle around the object.
 		- When set to 0 it doesn't show rectangles and doesn't track.
 		- When you twist the right pot, it shows all the rectangles and highlights the one that's being currently tracked.
 		- You have to wait a little before it starts tracking.
+	- Left pot selects at what distance to track the object.
 
-4. Fully autonomous
-	- Give general location from UI
-	- It knows its location from dead reckoning and from recognizing the terrain.
-	- It searches for objects to track.
-	- When it's low battery, it makes its way back home.
+5. Version 5: Unjammable drone
+	- Custom device that quickly changes frequencies to get around jamming.
+
+## Capabilities
+- Cameras: Visible light, IR, Thermal
+- Drop a payload
+- Speaker and microphone
+- Powerful lights
+- Lidar for terrain mapping
 
 ## Sources
 - [Pico Documentation](https://www.raspberrypi.com/documentation/pico-sdk/hardware.html)
@@ -53,7 +54,7 @@ Raspberry Pi Pico code for a DIY flight controller for a quadcopter.
 
 ```sh
 sudo apt update
-sudo apt install cmake build-essential git wget python3 gcc-arm-none-eabi libnewlib-arm-none-eabi
+sudo apt install cmake build-essential git wgetclub python3 gcc-arm-none-eabi libnewlib-arm-none-eabi
 ```
 
 2. Install the Pico SDK
