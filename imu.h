@@ -35,7 +35,7 @@ class IMU {
 	private:
 		// I2C consts
 		static constexpr uint8_t _BMI160_ADDR = 0x68;
-		static constexpr uint BAUD_RATE = 400'000;
+		static constexpr uint _BAUD_RATE = 400'000;
 		i2c_inst_t* _i2c;
 
 		// Offsets subtracted from sensor data.
@@ -44,10 +44,10 @@ class IMU {
 
 		Angles _gyroAngleEstimation;
 
-		static constexpr uint _AVERAGE_SAMPLE = 11;
-		MovingAverage<_AVERAGE_SAMPLE> _accAvgX;
-		MovingAverage<_AVERAGE_SAMPLE> _accAvgY;
-		MovingAverage<_AVERAGE_SAMPLE> _accAvgZ;
+		static constexpr uint _AVERAGE_SAMPLES = 11;
+		MovingAverage<_AVERAGE_SAMPLES> _accAvgX;
+		MovingAverage<_AVERAGE_SAMPLES> _accAvgY;
+		MovingAverage<_AVERAGE_SAMPLES> _accAvgZ;
 
 		static constexpr double _PI = 3.141592653589793;
 		double _toDegrees(double radians) { return radians * (180.0 / _PI); }

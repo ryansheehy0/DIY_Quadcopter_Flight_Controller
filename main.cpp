@@ -7,8 +7,20 @@
 #include "pid.h"
 #include "led.h"
 
+/* To Do:
+	- Throw errors for invalid _i2c pins in imu.cpp IMU::IMU constructor
+		- Print to console and exit code
+	- Add ability to change between controller modes.
+*/
+
+enum class Mode {ACRO, STABILIZED};
+
 int main() {
 	stdio_init_all();
+
+	constexpr Mode CONTROLLER_MODE = Mode::ACRO;
+
+	constexpr bool
 
 	// Hardware objects
 	constexpr uint IMU_SDA_PIN = 16;

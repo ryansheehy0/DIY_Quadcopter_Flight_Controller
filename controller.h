@@ -5,7 +5,7 @@
 
 struct StickValues {
 	uint16_t throttle = 1000; // 1000 to 2000(PWM microseconds)
-	// Acro(Degrees per second) or Stabilized(Degrees)
+	// Mode: Acro(Degrees per second) or Stabilized(Degrees)
 	double pitch = 0;
 	double roll = 0;
 	double yaw = 0;

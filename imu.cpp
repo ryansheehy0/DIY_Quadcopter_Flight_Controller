@@ -22,7 +22,7 @@ IMU::IMU(uint sdaPin, uint sclPin) {
 			_i2c = i2c1;
 			break;
 		default:
-			//throw "Non-valid IMU sda pin.\n";
+			//"Non-valid IMU sda pin.\n";
 			return;
 	}
 	// Check that the other pin is correct
@@ -33,7 +33,7 @@ IMU::IMU(uint sdaPin, uint sclPin) {
 		case 13:
 		case 17:
 		case 21:
-			if (_i2c != i2c0) return; //throw "IMU pins do not match i2c port.\n";
+			if (_i2c != i2c0) return; //"IMU pins do not match i2c port.\n";
 			break;
 		case 3:
 		case 7:
@@ -41,10 +41,10 @@ IMU::IMU(uint sdaPin, uint sclPin) {
 		case 15:
 		case 19:
 		case 27:
-			if (_i2c != i2c1) return; //throw "IMU pins do not match i2c port.\n";
+			if (_i2c != i2c1) return; //"IMU pins do not match i2c port.\n";
 			break;
 		default:
-			//throw "Non-valid IMU scl pin.\n";
+			//"Non-valid IMU scl pin.\n";
 			return;
 	}
 
@@ -61,7 +61,7 @@ IMU::IMU(uint sdaPin, uint sclPin) {
 	constexpr int CALIBRATION_SAMPLES = 2000;
 
 	// Init I2C
-	i2c_init(_i2c, BAUD_RATE);
+	i2c_init(_i2c, _BAUD_RATE);
 	gpio_set_function(sclPin, GPIO_FUNC_I2C);
 	gpio_set_function(sdaPin, GPIO_FUNC_I2C);
 	gpio_pull_up(sclPin);

@@ -11,16 +11,13 @@ Raspberry Pi Pico code for a DIY flight controller for a quadcopter.
 	- Basic FPV camera
 
 2. Version 2: Advanced Drone
-	- Switch to pi pico 2
 	- Custom PCB mounted on top with larger battery mounted in the center
 		- Use off the shelf components
-		- Solder components onto the PCB
+		- Use header pins. Female on PCB and male on components.
 	- Advanced stabilized algorithms
 		- Accelerometer Averaging -> Butterworth filter
 		- Complimentary filter -> Madgwick filter
 	- Show battery level and other info on fpv video signal
-		- INA219
-		- Maybe use another thread
 
 3. Version 3: Thermal drone
 	- Switch between regular FPV camera and thermal one from left switch on controller.
@@ -33,11 +30,10 @@ Raspberry Pi Pico code for a DIY flight controller for a quadcopter.
 	- Left pot selects at what distance to track the object.
 
 - Possible features
-	- Change to stm32 blackpill
 	- Waterproof PCB
 	- Custom device that quickly changes frequencies to get around jamming.
 		- Uses mosfets on an antena to change frequency.
-	- FOC ESCs
+	- Drone swarm
 
 ## Capabilities
 - Cameras: Visible light, IR, Thermal
